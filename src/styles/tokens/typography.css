@@ -1,0 +1,21 @@
+:root{
+--font-sans:"Manrope",-apple-system,"Segoe UI",sans-serif;
+--font-mono:"JetBrains Mono","SF Mono",Consolas,monospace;
+/* Scale: size/line-height/weight/tracking */
+--type-display:800 40px/48px var(--font-sans);--tracking-display:-0.02em;
+--type-h1:800 32px/40px var(--font-sans);--tracking-h1:-0.02em;
+--type-h2:700 24px/32px var(--font-sans);--tracking-h2:-0.01em;
+--type-h3:700 20px/28px var(--font-sans);--tracking-h3:-0.01em;
+--type-h4:700 16px/24px var(--font-sans);--tracking-h4:0;
+--type-h5:700 14px/20px var(--font-sans);--tracking-h5:0;
+--type-body-lg:500 16px/24px var(--font-sans);
+--type-body:500 14px/22px var(--font-sans);
+--type-body-sm:500 13px/20px var(--font-sans);
+--type-label:600 13px/16px var(--font-sans);
+--type-caption:500 12px/16px var(--font-sans);
+--type-overline:700 11px/16px var(--font-sans);--tracking-overline:0.08em;
+/* Financial numerals — always tabular */
+--type-kpi:800 28px/34px var(--font-sans);--tracking-kpi:-0.01em;
+--type-kpi-lg:800 36px/42px var(--font-sans);
+--numeric-features:"tnum" 1,"lnum" 1;/* @kind other */
+}

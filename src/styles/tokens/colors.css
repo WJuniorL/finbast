@@ -1,0 +1,27 @@
+:root{
+/* Brand red (from logo assets/logo-finbast.png) */
+--red-50:#FEF1F1;--red-100:#FDDDDE;--red-200:#FAB9BB;--red-300:#F58A8D;--red-400:#EE5257;--red-500:#E8232A;--red-600:#D31118;--red-700:#B00E14;--red-800:#8C1015;--red-900:#6B0F13;
+/* Ink — dark panels, nav, dark tables */
+--ink-950:#0F0F14;--ink-900:#14141A;--ink-800:#1C1C24;--ink-700:#25252F;--ink-600:#31313D;--ink-500:#43434F;
+/* Neutral grays (cool) */
+--gray-50:#F7F7F9;--gray-100:#F2F2F4;--gray-200:#E7E7EB;--gray-300:#D6D6DC;--gray-400:#AEAEB8;--gray-500:#8A8A94;--gray-600:#6B6B76;--gray-700:#55555F;--gray-800:#33333C;--gray-900:#17171C;
+/* Semantic */
+--green-50:#EAF7EF;--green-100:#D0EEDC;--green-500:#17A34A;--green-600:#128A3E;--green-700:#0E6F33;
+--amber-50:#FEF6E7;--amber-100:#FDEAC2;--amber-500:#F59E0B;--amber-600:#C77D08;--amber-700:#9A6106;
+--blue-50:#EDF3FE;--blue-100:#D8E5FC;--blue-500:#3B72E8;--blue-600:#2A5CC9;--blue-700:#2149A0;
+/* Aliases — semantic roles */
+--color-primary:var(--red-500);--color-primary-hover:var(--red-600);--color-primary-pressed:var(--red-700);--color-primary-soft:var(--red-50);--color-primary-soft-border:var(--red-200);
+--color-secondary:var(--ink-900);--color-secondary-hover:var(--ink-800);
+--color-accent:var(--blue-500);
+--bg-canvas:var(--gray-100);--bg-sunken:var(--gray-50);
+--surface-card:#FFFFFF;--surface-dark:var(--ink-900);--surface-dark-raised:var(--ink-800);--surface-dark-hover:var(--ink-700);
+--border-default:var(--gray-200);--border-strong:var(--gray-300);--border-dark:var(--ink-700);
+--text-primary:var(--gray-900);--text-secondary:var(--gray-700);--text-muted:var(--gray-500);--text-on-dark:#FFFFFF;--text-on-dark-secondary:#A3A3AF;--text-on-primary:#FFFFFF;
+--success:var(--green-600);--success-bg:var(--green-50);--success-border:var(--green-100);
+--warning:var(--amber-600);--warning-bg:var(--amber-50);--warning-border:var(--amber-100);
+--error:var(--red-600);--error-bg:var(--red-50);--error-border:var(--red-200);
+--info:var(--blue-600);--info-bg:var(--blue-50);--info-border:var(--blue-100);
+/* Financial semantics */
+--value-positive:var(--green-600);--value-negative:var(--red-600);--value-neutral:var(--gray-900);
+--focus-ring:0 0 0 3px rgba(232,35,42,.25);
+}

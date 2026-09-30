@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Design tokens portados de C:\Projetos Claude\finbast\tokens (protótipo) — copiados
+   verbatim, sem edição, para facilitar comparar/atualizar contra a fonte original. */
+@import "../styles/tokens/colors.css";
+@import "../styles/tokens/typography.css";
+@import "../styles/tokens/spacing.css";
+@import "../styles/tokens/effects.css";
+@import "../styles/tokens/base.css";
+
+:root {
+  /* No protótipo, --font-sans/--font-mono apontavam para um @import do Google Fonts.
+     Aqui apontam para as fontes carregadas via next/font (self-hosted, otimizado) —
+     ver src/app/layout.tsx. Mesmas famílias (Manrope, JetBrains Mono), mesmo resultado visual. */
+  --font-sans: var(--font-manrope), -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "SF Mono", Consolas, monospace;
+}
+
+/* ponytail: só expõe pra Tailwind (className="rounded-xl" etc.) o que já usaríamos de cara —
+   font e radius. Cor/spacing continuam via var(--token) em style inline, igual ao protótipo;
+   mapear todo o resto pro namespace do Tailwind é trabalho pra quando algum componente pedir. */
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-pill: var(--radius-pill);
+}
+
+/* Spinner do Button (loading). No protótipo isso era injetado em runtime via DOM porque não
+   havia stylesheet própria; aqui já existe, então vira regra global comum. */
+@keyframes fbspin {
+  to { transform: rotate(360deg); }
+}

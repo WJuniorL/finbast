@@ -1,0 +1,5 @@
+body{margin:0;font:var(--type-body);color:var(--text-primary);background:var(--bg-canvas);-webkit-font-smoothing:antialiased}
+a{color:var(--red-600);text-decoration:none}
+a:hover{color:var(--red-700);text-decoration:underline}
+*,*::before,*::after{box-sizing:border-box}
+.fin-num{font-variant-numeric:tabular-nums lining-nums}
