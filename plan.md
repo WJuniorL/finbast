@@ -55,7 +55,7 @@ criação de cada tabela.
 8. ✅ Planejamento e Simulador (inclui link do líder de setor)
 9. ✅ Custo e precificação de produto
 10. ✅ DRE e Relatórios + exportação
-11. 🔄 Medição de uso + botões de demanda — eventos de Pagar, Receber, bancos, Planejamento e Produtos registrados; cotas e demais módulos pendentes
+11. ✅ Medição de uso + botões de demanda — registro de eventos (Pagar, Receber, bancos, Planejamento, Produtos, cadastros) e botões de demanda no Dashboard; **sem cotas** (PRD: fora do MVP)
 12. ⬜ Perfil/Usuários (ajustes finos)
 13. ⬜ Painel do Contador — só depois do núcleo (1–10); confirmar que entra no MVP antes de começar
 
@@ -189,7 +189,10 @@ criação de cada tabela.
 - ✅ Spec `tests/e2e/relatorios.spec.ts` passou (1,6 min) em build local na porta 3100.
 - ✅ Advisors: `public.rls_auto_enable()` (função do event trigger `ensure_rls`) teve o EXECUTE revogado de anon/authenticated em `20261019190000_revoke_rls_auto_enable.sql`; DDL com o trigger segue funcionando.
   Resta só "proteção contra senhas vazadas" desativada (painel Auth, ação manual).
-- **Próxima entrega:** etapa 11 (cotas de uso e demais módulos) e etapa 12.
+- ✅ Etapa 11: `interesses_demanda` + RPC idempotente, botões "Em estudo" no Dashboard e eventos de uso
+  dos quatro cadastros por trigger (`20261019200000_demanda_uso_cadastros.sql`). 13 verificações de
+  banco e spec do Dashboard passaram. Cotas ficam de fora (PRD); contagem de "lançamento" segue decisão em aberto.
+- **Próxima entrega:** etapa 12 (Perfil/Usuários, ajustes finos).
 
 ## Decisões em aberto (não travar sessão por causa delas, mas não presumir resposta)
 

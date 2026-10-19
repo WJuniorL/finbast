@@ -5,6 +5,7 @@ import {dashboardMonthSchema,type Dashboard} from "@/lib/dashboard";
 import {cashTotals} from "@/lib/fluxo-caixa";
 import {formatCentavos,formatDate,hojeBahia} from "@/lib/financeiro";
 import {CashChart} from "@/components/dashboard/cash-chart";
+import {DemandaButtons} from "@/components/dashboard/demanda-buttons";
 import {Card,CardContent,CardHeader,CardTitle,CardDescription} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
@@ -47,5 +48,6 @@ export default async function DashboardPage({params,searchParams}:{params:Promis
    <Card><CardHeader><CardTitle><h2>Títulos abertos do mês</h2></CardTitle><CardDescription>Até 10 títulos, em ordem de vencimento. Os totais consideram todos.</CardDescription></CardHeader><CardContent><Table><TableHeader><TableRow><TableHead>Vencimento</TableHead><TableHead>Descrição</TableHead><TableHead>Tipo</TableHead><TableHead>Situação hoje</TableHead><TableHead>Valor</TableHead></TableRow></TableHeader><TableBody>{data.titulos.map(t=><TableRow key={t.id}><TableCell>{formatDate(t.vencimento)}</TableCell><TableCell className="max-w-64 whitespace-normal"><Link className="underline" href={`${base}/${t.tipo}/${t.id}`}>{t.descricao}</Link></TableCell><TableCell>{t.tipo==="pagar"?"A pagar":"A receber"}</TableCell><TableCell>{t.vencimento<data.hoje?"Vencido":"Em aberto"}</TableCell><TableCell className="font-mono">{formatCentavos(t.valor)}</TableCell></TableRow>)}{!data.titulos.length&&<TableRow><TableCell colSpan={5}>Nenhum título aberto neste mês.</TableCell></TableRow>}</TableBody></Table></CardContent></Card>
    <Card><CardHeader><CardTitle><h2>Saldos bancários no fim do mês</h2></CardTitle><CardDescription>Abertura mais extrato confirmado; contas arquivadas preservadas.</CardDescription></CardHeader><CardContent className="space-y-3">{data.contas.map(b=><div className="flex flex-wrap justify-between gap-2 border-b pb-3" key={b.id}><Link className="underline" href={`${base}/bancos/${b.id}`}>{b.nome}{!b.ativo?" (arquivada)":""}</Link><span className="font-mono">{formatCentavos(b.saldo)}</span></div>)}{!data.contas.length&&<p>Nenhuma conta com abertura até o fim deste mês.</p>}{data.quantidade_contas>10&&<p className="text-sm text-muted-foreground">Mostrando 10 de {data.quantidade_contas} contas.</p>}</CardContent></Card>
   </>}
+  <Card><CardHeader><CardTitle><h2>Em estudo</h2></CardTitle><CardDescription>Ainda não existem. Registre interesse para nos ajudar a priorizar.</CardDescription></CardHeader><CardContent><DemandaButtons empresaId={id}/></CardContent></Card>
  </>;
 }

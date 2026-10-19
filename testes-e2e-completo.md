@@ -988,13 +988,15 @@ R$ 105,00 pagos com encargos/desconto e R$ 3,03 avulsos. Arquivar preserva assoc
 
 ### T087 — Uso e demanda
 
-**Implementação:** Parcial · **Automação:** Sem cobertura completa
+**Implementação:** Implementado (sem cotas, por decisão do PRD) · **Automação:** Banco e navegador
 
-**Status:** 🔄 cobertura parcial · **Última rodada:** — · **Resultado:** —
+**Status:** ✅ automatizado · **Última rodada:** 19/10/2026 · **Resultado:** passou; conferência manual pendente
 
-**Ações:** Consulte eventos atuais e registre interesse em recurso futuro.
+**Ações:** No Dashboard, clique em "Quero: Assistente de IA"; repita pela API/RPC. Crie e edite um cliente (e as demais tabelas de cadastro). Consulte eventos atuais.
 
-**Esperado:** Uso já registrado em Pagar/Receber; botões de demanda e demais módulos ainda pendentes; sem cotas comerciais.
+**Esperado:** Um interesse por usuário/empresa/recurso, idempotente, com um único evento `demanda`. Leitor e contador leitura podem registrar e veem só o próprio interesse; sem vínculo, empresa alheia, recurso fora da lista, insert direto e anônimo são recusados. Cadastros geram evento `cadastros:<tabela>` (criar/editar). Sem painel de gestão e sem cotas ou cobrança. Eventos de Fluxo, Dashboard (leitura) e Relatórios (bruto) não são registrados por decisão: só ações.
+
+**Evidência:** `scripts/db-test-demanda.mjs` (13 verificações), `tests/e2e/dashboard.spec.ts`, migration `20261019200000_demanda_uso_cadastros.sql`.
 
 ### T088 — Perfil e usuários
 
@@ -1597,6 +1599,7 @@ Fluxo/Dashboard → Planejamento/produtos/DRE. Eventos de uso entram junto de ca
 | 14/10/2026 | Build local :3100 + Supabase configurado | Planejamento, líderes/OTP e regressão completa | 34 unidades, 949 verificações de banco (146 novas regras e 26 de concorrência), build/TypeScript/lint e advisors sem alertas. Duas migrations aplicadas; 26 tabelas públicas com RLS. Após corrigir campos/seletores, truncamento do OTP de oito dígitos e sincronização das ações no teste, os oito specs passaram em 4,3min com `npx playwright test --output=test-results/final-planejamento`. Planejamento passou em 38,4s e OTP em 2,6s. Simulação, cópia, fechamento, vínculo sem duplicação, revisão/substituição, revogação e 390px verificados. Fixtures revertidas/removidas; sem envio real de e-mail. Roteiro com 107 cenários; conferência manual e SMTP/entrega pendentes |
 | 15/10/2026 | Build local :3100 + Supabase configurado | Produtos/custeio/precificação e regressão completa | 38 unidades, build/TypeScript/lint e advisors sem alertas. Migration aplicada; 34 tabelas públicas com RLS. Banco: regressão completa de 1.115 verificações passou, depois o módulo foi repetido com quatro assertivas adicionais de recorrência (148 regras de Produtos + 22 de concorrência + 949 anteriores = 1.119 na cobertura atual). Após corrigir fixtures e esperar a conclusão da segunda projeção, os nove specs passaram no build final em 5,2min com `npx playwright test --output=test-results/final-produtos`; Produtos em 31,8s. Rateio exato, margens/gerais, bases, avulsos, preço/volume, substituição sem duplicar, leitura/revogação e 390px verificados. Fixtures revertidas/removidas; sem envio de e-mail. Roteiro com 114 cenários; conferência manual pendente |
 | 19/10/2026 | Build local :3100 + Supabase reativado | DRE e relatórios | 43 unidades, build/TypeScript/lint passaram. Banco: 135 verificações de relatórios e 16 de concorrência passaram; os módulos anteriores até Produtos foram reexecutados sem falha (a regressão foi interrompida por ECONNRESET e relatórios rodou isolado). Spec `relatorios.spec.ts` passou em 1,6min. Advisors: `rls_auto_enable()` SECURITY DEFINER exposta e proteção de senha vazada desativada, fora do escopo desta entrega. Sem envio de e-mail; conferência manual pendente |
+| 19/10/2026 | Build local :3100 + Supabase | Demanda e uso de cadastros | Migration aplicada; `db-test-demanda.mjs`: 13 verificações passaram (idempotência, papéis, isolamento, anônimo, eventos de cadastros); regressão de banco anterior reexecutada até Produtos na rodada de relatórios. Spec do Dashboard com clique do botão passou (40,9s). Build, TypeScript e lint passaram. Revogação de `rls_auto_enable` testada com DDL após a migration. Sem e-mail real; conferência manual pendente |
 
 Atualizar esta tabela a cada entrega com números efetivamente executados, falhas/ressalvas e
 o estado das funcionalidades novas. Não copiar o resultado anterior como uma nova execução.
