@@ -39,3 +39,32 @@ export async function changeRole(_: FormState, form: FormData): Promise<FormStat
   revalidatePath(`/empresas/${parsed.data.empresa}`);
   return { success: "Permissão atualizada." };
 }
+
+export async function renameEmpresa(_: FormState, form: FormData): Promise<FormState> {
+  const { supabase } = await requireUser();
+  const parsed = z.object({ empresa: z.string().uuid(), nome: empresaSchema.shape.nome }).safeParse({ empresa: form.get("empresa"), nome: form.get("nome") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Confira o nome." };
+  // RLS: só o proprietário atualiza; zero linhas significa sem permissão.
+  const { data, error } = await supabase.from("empresas").update({ nome: parsed.data.nome }).eq("id", parsed.data.empresa).select("id").maybeSingle();
+  if (error || !data) return { error: "Não foi possível renomear esta conta." };
+  revalidatePath("/empresas", "layout");
+  return { success: "Nome atualizado." };
+}
+
+export async function removeMember(form: FormData) {
+  const { supabase } = await requireUser();
+  const parsed = z.object({ empresa: z.string().uuid(), usuario: z.string().uuid() }).safeParse({ empresa: form.get("empresa"), usuario: form.get("usuario") });
+  if (!parsed.success) redirect("/empresas");
+  await supabase.from("usuarios_empresas").delete().eq("empresa_id", parsed.data.empresa).eq("usuario_id", parsed.data.usuario);
+  revalidatePath(`/empresas/${parsed.data.empresa}`);
+}
+
+export async function leaveEmpresa(form: FormData) {
+  const { supabase } = await requireUser();
+  const parsed = z.string().uuid().safeParse(form.get("empresa"));
+  if (!parsed.success) redirect("/empresas");
+  await supabase.rpc("sair_da_empresa", { p_empresa: parsed.data });
+  const store = await cookies();
+  if (store.get("finbast_empresa")?.value === parsed.data) store.delete("finbast_empresa");
+  redirect("/empresas");
+}

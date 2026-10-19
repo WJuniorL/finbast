@@ -8,6 +8,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com). Datas em dd/mm/aaaa.
 - Botões de demanda no Dashboard (interesse idempotente por usuário/recurso, sem painel de gestão).
 - Eventos de uso dos cadastros (categorias, centros, clientes, fornecedores), sem cotas.
 
+- Perfil da conta: e-mails dos acessos, renomear, remover acesso e sair da conta.
+
 ### Segurança
 - Revogado o EXECUTE público de `rls_auto_enable()` (função do event trigger de RLS).
 

@@ -5,6 +5,8 @@ import { requireUser } from "@/lib/auth";
 import { RoleForm } from "@/components/empresas/role-form";
 import { InviteForm } from "@/components/empresas/invite-form";
 import { revokeInvite } from "@/app/convites/actions";
+import { leaveEmpresa, removeMember } from "@/app/empresas/actions";
+import { RenameForm } from "@/components/empresas/rename-form";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +23,9 @@ export default async function EmpresaPage({ params }: { params: Promise<{ id: st
   if (error) throw new Error("Não foi possível carregar a empresa.");
   if (!empresa) notFound();
   const owner = empresa.dono_id === user.id;
-  const { data: membros, error: membrosError } = await supabase.from("usuarios_empresas").select("usuario_id, papel").eq("empresa_id", id);
+  const { data: membros, error: membrosError } = owner
+    ? await supabase.rpc("listar_acessos", { p_empresa: id })
+    : await supabase.from("usuarios_empresas").select("usuario_id, papel").eq("empresa_id", id);
   if (membrosError) throw new Error("Não foi possível carregar os acessos.");
   const { data: convites, error: convitesError } = owner
     ? await supabase.from("convites_empresas").select("id,email,papel,expira_em").eq("empresa_id", id).is("aceito_em", null).gt("expira_em", new Date().toISOString())
@@ -40,11 +44,13 @@ export default async function EmpresaPage({ params }: { params: Promise<{ id: st
     <Card><CardHeader><CardTitle>Contas bancárias e conciliação</CardTitle><CardDescription>Importe extratos CSV, XLSX ou OFX e confira os pagamentos e recebimentos registrados.</CardDescription></CardHeader><CardContent><Button asChild><Link href={`/empresas/${id}/bancos`}>Abrir contas bancárias</Link></Button></CardContent></Card>
     <Card><CardHeader><CardTitle>Fluxo de caixa</CardTitle><CardDescription>Compare entradas, saídas e saldos realizados e previstos por período.</CardDescription></CardHeader><CardContent><Button asChild><Link href={`/empresas/${id}/fluxo-caixa`}>Abrir fluxo de caixa</Link></Button></CardContent></Card>
     <Card><CardHeader><CardTitle>Acessos desta conta</CardTitle><CardDescription>{owner ? "Gerencie os níveis de acesso dos usuários vinculados." : "Seu acesso é definido pelo proprietário desta conta."}</CardDescription></CardHeader>
-      <CardContent className="space-y-5">{membros?.map((membro) => <div key={membro.usuario_id} className="flex flex-wrap items-center justify-between gap-4 border-b pb-5 last:border-0 last:pb-0">
-        <div><p className="font-medium">{membro.usuario_id === user.id ? "Você" : "Usuário vinculado"}</p><p className="text-sm text-muted-foreground">{labels[membro.papel]}</p></div>
-        {owner && membro.papel !== "proprietario" && <RoleForm empresa={id} usuario={membro.usuario_id} papel={membro.papel} />}
+      <CardContent className="space-y-5">{(membros as { usuario_id: string; papel: string; email?: string }[] | null)?.map((membro) => <div key={membro.usuario_id} className="flex flex-wrap items-center justify-between gap-4 border-b pb-5 last:border-0 last:pb-0">
+        <div><p className="font-medium">{membro.usuario_id === user.id ? "Você" : membro.email || "Usuário vinculado"}</p><p className="text-sm text-muted-foreground">{labels[membro.papel]}</p></div>
+        {owner && membro.papel !== "proprietario" && <div className="flex flex-wrap items-start gap-2"><RoleForm empresa={id} usuario={membro.usuario_id} papel={membro.papel} /><form action={removeMember}><input type="hidden" name="empresa" value={id} /><input type="hidden" name="usuario" value={membro.usuario_id} /><Button type="submit" variant="outline" size="sm">Remover acesso</Button></form></div>}
       </div>)}</CardContent>
     </Card>
+    {owner && <Card><CardHeader><CardTitle>Dados da conta</CardTitle><CardDescription>Documento e tipo não podem ser alterados.</CardDescription></CardHeader><CardContent><RenameForm empresa={id} nome={empresa.nome} /></CardContent></Card>}
+    {!owner && <Card><CardHeader><CardTitle>Sair desta conta</CardTitle><CardDescription>Você perde o acesso até receber um novo convite. Os registros da conta permanecem.</CardDescription></CardHeader><CardContent><form action={leaveEmpresa}><input type="hidden" name="empresa" value={id} /><Button type="submit" variant="outline">Sair desta conta</Button></form></CardContent></Card>}
     {owner && <div className="grid gap-6 lg:grid-cols-2">
       <Card><CardHeader><CardTitle>Convidar usuário</CardTitle><CardDescription>Defina o acesso e compartilhe um link individual.</CardDescription></CardHeader><CardContent><InviteForm empresa={id} /></CardContent></Card>
       <Card><CardHeader><CardTitle>Convites pendentes</CardTitle><CardDescription>Links válidos que ainda não foram aceitos.</CardDescription></CardHeader><CardContent className="space-y-4">

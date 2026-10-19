@@ -56,7 +56,7 @@ criação de cada tabela.
 9. ✅ Custo e precificação de produto
 10. ✅ DRE e Relatórios + exportação
 11. ✅ Medição de uso + botões de demanda — registro de eventos (Pagar, Receber, bancos, Planejamento, Produtos, cadastros) e botões de demanda no Dashboard; **sem cotas** (PRD: fora do MVP)
-12. ⬜ Perfil/Usuários (ajustes finos)
+12. ✅ Perfil/Usuários — e-mails dos acessos, renomear conta, remover acesso e sair da conta
 13. ⬜ Painel do Contador — só depois do núcleo (1–10); confirmar que entra no MVP antes de começar
 
 ## Checkpoint de 13/10/2026
@@ -192,7 +192,10 @@ criação de cada tabela.
 - ✅ Etapa 11: `interesses_demanda` + RPC idempotente, botões "Em estudo" no Dashboard e eventos de uso
   dos quatro cadastros por trigger (`20261019200000_demanda_uso_cadastros.sql`). 13 verificações de
   banco e spec do Dashboard passaram. Cotas ficam de fora (PRD); contagem de "lançamento" segue decisão em aberto.
-- **Próxima entrega:** etapa 12 (Perfil/Usuários, ajustes finos).
+- ✅ Etapa 12: `20261019210000_perfil_usuarios.sql` (`listar_acessos`, `sair_da_empresa`), UI de renomear,
+  remover acesso e sair. 16 verificações de banco e spec `app.spec.ts` passaram.
+- **Próxima entrega:** etapa 13 (Painel do Contador) só após confirmar que entra no MVP; antes, deploy
+  na Vercel, SMTP/OTP real e regressão completa (`test:db` + `test:e2e`).
 
 ## Decisões em aberto (não travar sessão por causa delas, mas não presumir resposta)
 

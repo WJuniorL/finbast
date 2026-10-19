@@ -1000,13 +1000,15 @@ R$ 105,00 pagos com encargos/desconto e R$ 3,03 avulsos. Arquivar preserva assoc
 
 ### T088 — Perfil e usuários
 
-**Implementação:** Não implementado · **Automação:** Sem cobertura completa
+**Implementação:** Implementado (renomear conta, e-mails dos acessos, remover acesso, sair da conta) · **Automação:** Banco e navegador
 
-**Status:** 📋 planejado · **Última rodada:** — · **Resultado:** —
+**Status:** ✅ automatizado · **Última rodada:** 19/10/2026 · **Resultado:** passou; conferência manual pendente
 
-**Ações:** Altere dados permitidos e confirme alterações sensíveis.
+**Ações:** Como proprietário, veja o e-mail de cada acesso, renomeie a conta e remova um acesso. Como membro não proprietário, use "Sair desta conta". Tente as mesmas operações sem permissão.
 
-**Esperado:** Sem escalada de privilégio; ajustes finos ainda planejados.
+**Esperado:** Só o proprietário lista e-mails (RPC `listar_acessos`), renomeia e remove; proprietário nunca é removido nem sai; membro sai apenas de si mesmo e perde o acesso (404 depois); sem vínculo/anônimo não altera nada. Documento e tipo permanecem imutáveis. Troca de e-mail/senha de login segue pelo fluxo de recuperação de senha; a senha de aprovação não faz parte desta etapa. Painel do Contador/IA segue em decisão em aberto.
+
+**Evidência:** `scripts/db-test-perfil.mjs` (16 verificações), `tests/e2e/app.spec.ts`, migration `20261019210000_perfil_usuarios.sql`.
 
 ### T089 — Painel do contador/IA
 
@@ -1600,6 +1602,7 @@ Fluxo/Dashboard → Planejamento/produtos/DRE. Eventos de uso entram junto de ca
 | 15/10/2026 | Build local :3100 + Supabase configurado | Produtos/custeio/precificação e regressão completa | 38 unidades, build/TypeScript/lint e advisors sem alertas. Migration aplicada; 34 tabelas públicas com RLS. Banco: regressão completa de 1.115 verificações passou, depois o módulo foi repetido com quatro assertivas adicionais de recorrência (148 regras de Produtos + 22 de concorrência + 949 anteriores = 1.119 na cobertura atual). Após corrigir fixtures e esperar a conclusão da segunda projeção, os nove specs passaram no build final em 5,2min com `npx playwright test --output=test-results/final-produtos`; Produtos em 31,8s. Rateio exato, margens/gerais, bases, avulsos, preço/volume, substituição sem duplicar, leitura/revogação e 390px verificados. Fixtures revertidas/removidas; sem envio de e-mail. Roteiro com 114 cenários; conferência manual pendente |
 | 19/10/2026 | Build local :3100 + Supabase reativado | DRE e relatórios | 43 unidades, build/TypeScript/lint passaram. Banco: 135 verificações de relatórios e 16 de concorrência passaram; os módulos anteriores até Produtos foram reexecutados sem falha (a regressão foi interrompida por ECONNRESET e relatórios rodou isolado). Spec `relatorios.spec.ts` passou em 1,6min. Advisors: `rls_auto_enable()` SECURITY DEFINER exposta e proteção de senha vazada desativada, fora do escopo desta entrega. Sem envio de e-mail; conferência manual pendente |
 | 19/10/2026 | Build local :3100 + Supabase | Demanda e uso de cadastros | Migration aplicada; `db-test-demanda.mjs`: 13 verificações passaram (idempotência, papéis, isolamento, anônimo, eventos de cadastros); regressão de banco anterior reexecutada até Produtos na rodada de relatórios. Spec do Dashboard com clique do botão passou (40,9s). Build, TypeScript e lint passaram. Revogação de `rls_auto_enable` testada com DDL após a migration. Sem e-mail real; conferência manual pendente |
+| 19/10/2026 | Build local :3100 + Supabase | Perfil/usuários | Migration aplicada; `db-test-perfil.mjs`: 16 verificações passaram. Spec `app.spec.ts` ampliado (e-mail do acesso, renomear, sair da conta) passou em 1,3min após esperar a navegação em "Trocar de conta" (rótulo "Nome da conta" agora existe também na página da empresa). Build, TypeScript e lint passaram; demais specs não reexecutados. Conferência manual pendente |
 
 Atualizar esta tabela a cada entrega com números efetivamente executados, falhas/ressalvas e
 o estado das funcionalidades novas. Não copiar o resultado anterior como uma nova execução.
