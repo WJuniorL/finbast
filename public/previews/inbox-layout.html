@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prévia responsiva do inbox — Estallo</title>
+  <style>
+    @font-face { font-family: Manrope; src: url('inbox-layout/manrope.woff2') format('woff2'); font-weight: 200 800; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #eaf0f4; font: 12px/1.5 Manrope, system-ui, sans-serif; color: #456376; overflow: hidden; height: 100dvh; display: flex; flex-direction: column; }
+    header { display: flex; align-items: center; gap: 22px; min-height: 62px; padding: 10px 22px; background: white; border-bottom: 1px solid #dbe5ec; flex: none; }
+    .brand { font-size: 11px; font-weight: 700; color: #0b6e9a; letter-spacing: 1.4px; white-space: nowrap; }
+    .brand span { color: #91a4b1; font-weight: 400; letter-spacing: 0; margin-left: 8px; }
+    nav { display: flex; background: #f0f5f8; border: 1px solid #e5edf2; padding: 3px; border-radius: 8px; gap: 3px; }
+    button { font: inherit; cursor: pointer; border: 0; background: transparent; color: #7891a2; border-radius: 5px; padding: 6px 12px; font-size: 11px; white-space: nowrap; }
+    button[aria-pressed="true"] { background: white; color: #0b6e9a; box-shadow: 0 1px 4px #1b4c6c10; font-weight: 600; }
+    button:focus-visible, a:focus-visible { outline: 2px solid #1099d3; outline-offset: 3px; }
+    .tools { margin-left: auto; display: flex; align-items: center; gap: 14px; white-space: nowrap; }
+    .tools a { color: #0b6e9a; text-decoration: none; font-size: 10px; }
+    .tools small { font-size: 9px; color: #8da3b2; }
+    #viewport { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 19px; }
+    #frame { position: relative; flex: none; }
+    iframe { position: absolute; top: 0; left: 0; border: 0; outline: 1px solid #d8e3eb; border-radius: 10px; background: white; transform-origin: top left; box-shadow: 0 12px 40px #24516c0e; }
+    footer { display: flex; justify-content: space-between; align-items: center; gap: 15px; min-height: 47px; padding: 0 24px; font-size: 10px; color: #8ca0af; flex: none; }
+    footer strong { color: #587f98; font-weight: 500; }
+    @media(max-width:900px) { header { gap: 12px; padding: 10px 12px; flex-wrap: wrap; } .brand span, .tools small { display: none; } button { padding: 5px 8px; font-size: 10px; } .tools { gap: 6px; } #viewport { padding: 10px; } footer { font-size: 9px; padding: 0 13px; } }
+  </style>
+</head>
+<body>
+  <header><div class="brand">ESTALLO<span>Prévia do inbox</span></div><nav aria-label="Tamanho da prévia"><button data-device="desktop" aria-pressed="true">Desktop</button><button data-device="notebook" aria-pressed="false">Notebook</button><button data-device="tablet" aria-pressed="false">Tablet</button></nav><button id="orientation" hidden>Girar tablet ↻</button><div class="tools"><small>Ficha lateral original preservada</small><a href="inbox-layout/chat.html" target="_blank" rel="noopener">Abrir em tamanho real ↗</a></div></header>
+  <div id="viewport"><div id="frame"><iframe id="preview" src="inbox-layout/chat.html" title="Prévia interativa do inbox"></iframe></div></div>
+  <footer><span><strong id="dimensions"></strong><span id="behavior"></span></span><span>Dados demonstrativos · Experimente os filtros, menus e a ficha do contato.</span></footer>
+  <script>
+    const presets = { desktop: [1920,1080], notebook: [1366,768], tablet: [1024,768] };
+    let device = new URLSearchParams(location.search).get('device') || 'desktop';
+    if (!presets[device]) device = 'desktop';
+    let portrait = false;
+    function update() {
+      const dimensions = presets[device];
+      const [width,height] = device === 'tablet' && portrait ? [768,1024] : dimensions;
+      const area = document.getElementById('viewport');
+      const scale = Math.min(1,(area.clientWidth - 40)/width,(area.clientHeight - 36)/height);
+      const frame = document.getElementById('frame');
+      const preview = document.getElementById('preview');
+      frame.style.width = width * scale + 'px'; frame.style.height = height * scale + 'px';
+      preview.style.width = width + 'px'; preview.style.height = height + 'px'; preview.style.transform = 'scale(' + scale + ')';
+      document.querySelectorAll('[data-device]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.device === device)));
+      document.getElementById('orientation').hidden = device !== 'tablet';
+      document.getElementById('dimensions').textContent = width + ' × ' + height + ' · ' + Math.round(scale * 100) + '%';
+      document.getElementById('behavior').textContent = device === 'desktop' ? ' · Ficha ajustável pela divisória; chat se adapta' : device === 'notebook' ? ' · Abra a ficha pelo ícone e arraste sua divisória' : portrait ? ' · Conversa em foco; lista e ficha sob demanda' : ' · Lista compacta; ficha sob demanda';
+    }
+    document.querySelectorAll('[data-device]').forEach(button => button.addEventListener('click', () => { device = button.dataset.device; update(); }));
+    document.getElementById('orientation').addEventListener('click', () => { portrait = !portrait; update(); });
+    window.addEventListener('resize',update); update();
+  </script>
+</body>
+</html>

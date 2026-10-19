@@ -1,36 +1,154 @@
 @import "tailwindcss";
-
-/* Design tokens portados de C:\Projetos Claude\finbast\tokens (protótipo) — copiados
-   verbatim, sem edição, para facilitar comparar/atualizar contra a fonte original. */
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @import "../styles/tokens/colors.css";
 @import "../styles/tokens/typography.css";
 @import "../styles/tokens/spacing.css";
 @import "../styles/tokens/effects.css";
-@import "../styles/tokens/base.css";
+@import "../styles/tokens/base.css" layer(base);
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  /* No protótipo, --font-sans/--font-mono apontavam para um @import do Google Fonts.
-     Aqui apontam para as fontes carregadas via next/font (self-hosted, otimizado) —
-     ver src/app/layout.tsx. Mesmas famílias (Manrope, JetBrains Mono), mesmo resultado visual. */
   --font-sans: var(--font-manrope), -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-jetbrains-mono), "SF Mono", Consolas, monospace;
+  --background: var(--bg-canvas);
+  --foreground: var(--text-primary);
+  --card: var(--surface-card);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface-card);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--red-600);
+  --primary-foreground: var(--text-on-primary);
+  --secondary: var(--gray-200);
+  --secondary-foreground: var(--gray-900);
+  --muted: var(--gray-50);
+  --muted-foreground: var(--gray-600);
+  --accent: var(--red-50);
+  --accent-foreground: var(--red-700);
+  --destructive: var(--red-600);
+  --destructive-foreground: var(--text-on-primary);
+  --border: var(--border-default);
+  --input: var(--border-strong);
+  --ring: var(--red-500);
+  --radius: 12px;
+  --chart-1: var(--red-600);
+  --chart-2: var(--blue-600);
+  --chart-3: var(--green-700);
+  --chart-4: var(--amber-700);
+  --chart-5: var(--ink-500);
+  --sidebar: var(--ink-900);
+  --sidebar-foreground: var(--text-on-dark);
+  --sidebar-primary: var(--red-600);
+  --sidebar-primary-foreground: var(--text-on-primary);
+  --sidebar-accent: var(--ink-700);
+  --sidebar-accent-foreground: var(--text-on-dark);
+  --sidebar-border: var(--ink-600);
+  --sidebar-ring: var(--red-400);
+  --success-foreground: #fff;
+  --warning-foreground: var(--ink-950);
+  --info-foreground: #fff;
 }
 
-/* ponytail: só expõe pra Tailwind (className="rounded-xl" etc.) o que já usaríamos de cara —
-   font e radius. Cor/spacing continuam via var(--token) em style inline, igual ao protótipo;
-   mapear todo o resto pro namespace do Tailwind é trabalho pra quando algum componente pedir. */
+.dark {
+  --background: var(--ink-950);
+  --foreground: var(--gray-50);
+  --card: var(--ink-800);
+  --card-foreground: var(--gray-50);
+  --popover: var(--ink-800);
+  --popover-foreground: var(--gray-50);
+  --primary: var(--red-300);
+  --primary-foreground: var(--ink-950);
+  --secondary: var(--ink-600);
+  --secondary-foreground: var(--gray-50);
+  --muted: var(--ink-700);
+  --muted-foreground: var(--gray-400);
+  --accent: var(--ink-600);
+  --accent-foreground: var(--gray-50);
+  --destructive: var(--red-300);
+  --destructive-foreground: var(--ink-950);
+  --border: var(--ink-600);
+  --input: var(--ink-500);
+  --ring: var(--red-300);
+  --chart-1: var(--red-300);
+  --chart-2: var(--blue-100);
+  --chart-3: var(--green-100);
+  --chart-4: var(--amber-100);
+  --chart-5: var(--gray-300);
+  --sidebar: var(--ink-900);
+  --sidebar-foreground: var(--gray-50);
+  --sidebar-primary: var(--red-300);
+  --sidebar-primary-foreground: var(--ink-950);
+  --sidebar-accent: var(--ink-700);
+  --sidebar-accent-foreground: var(--gray-50);
+  --sidebar-border: var(--ink-600);
+  --sidebar-ring: var(--red-300);
+  --success: var(--green-100);
+  --success-foreground: var(--ink-950);
+  --warning: var(--amber-100);
+  --warning-foreground: var(--ink-950);
+  --info: var(--blue-100);
+  --info-foreground: var(--ink-950);
+}
+
 @theme inline {
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-xl: var(--radius-xl);
-  --radius-pill: var(--radius-pill);
+  --font-sans: var(--font-manrope), -apple-system, "Segoe UI", sans-serif;
+  --font-heading: var(--font-manrope), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+  --radius-4xl: 40px;
+  --shadow-card: var(--shadow-card);
+  --shadow-raised: var(--shadow-raised);
 }
 
-/* Spinner do Button (loading). No protótipo isso era injetado em runtime via DOM porque não
-   havia stylesheet própria; aqui já existe, então vira regra global comum. */
-@keyframes fbspin {
-  to { transform: rotate(360deg); }
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  a { color: inherit; }
+  a:hover { color: inherit; }
 }
+@keyframes fbspin { to { transform: rotate(360deg); } }

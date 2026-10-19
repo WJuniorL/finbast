@@ -24,7 +24,7 @@ export async function createClient() {
             );
           } catch {
             // Chamado de dentro de um Server Component (não pode setar cookie) — tudo bem,
-            // o middleware.ts cuida de manter a sessão atualizada nesse caso.
+            // o proxy.ts cuida de manter a sessão atualizada nesse caso.
           }
         },
       },

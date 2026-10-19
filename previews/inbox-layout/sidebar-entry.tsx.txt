@@ -1,0 +1,36 @@
+import { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import { CRMSidePanel } from '@/components/inbox/CRMSidePanel';
+import { TopBar } from '@/components/shell/TopBar';
+import { Sidebar } from '@/components/shell/Sidebar';
+import * as sizing from '@/lib/inbox/larguras-do-inbox';
+
+window.inboxPreviewSizing = sizing;
+window.dispatchEvent(new Event('preview:sizing-ready'));
+
+function SidebarPreview() {
+  const [conversation, setConversation] = useState(window.__INBOX_PREVIEW_CONTACT__);
+  useEffect(() => {
+    const select = event => setConversation(event.detail);
+    window.addEventListener('preview:contact-selected', select);
+    return () => window.removeEventListener('preview:contact-selected', select);
+  }, []);
+  return <CRMSidePanel conversation={conversation} />;
+}
+
+function NavigationPreview() {
+  const [collapsed, setCollapsed] = useState(true);
+  useEffect(() => {
+    const toggle = () => setCollapsed(value => !value);
+    window.addEventListener('preview:toggle-navigation', toggle);
+    return () => window.removeEventListener('preview:toggle-navigation', toggle);
+  }, []);
+  return <Sidebar collapsed={collapsed} />;
+}
+
+const panel = document.getElementById('original-contact-panel');
+const topbar = document.getElementById('original-system-topbar');
+const navigation = document.getElementById('original-system-navigation');
+if (panel) createRoot(panel).render(<SidebarPreview />);
+if (topbar) createRoot(topbar).render(<TopBar />);
+if (navigation) createRoot(navigation).render(<NavigationPreview />);

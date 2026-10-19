@@ -1,0 +1,18 @@
+import {test,expect} from "@playwright/test";
+import {createClient} from "@supabase/supabase-js";
+import {randomUUID,randomBytes,createHash} from "node:crypto";
+import {databaseClient} from "../../scripts/db-client.mjs";
+import {fixtureRpc} from "../../scripts/fluxo-fixture.mjs";
+test("líder: confirma OTP após erro sem perder e-mail e sem receber acesso financeiro",async({page})=>{
+ const admin=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.SUPABASE_SECRET_KEY??process.env.SERVICE_ROLE!,{auth:{persistSession:false,autoRefreshToken:false}}),db=databaseClient(),ids:string[]=[],email=`leader-otp-${randomUUID()}@example.com`;let empresa:string|undefined;
+ try{
+  await db.connect();for(const e of [`owner-otp-${randomUUID()}@example.com`,email]){const {data,error}=await admin.auth.admin.createUser({email:e,email_confirm:true});if(error||!data.user)throw new Error("Falha na fixture OTP.");ids.push(data.user.id);}
+  await db.query("begin");await db.query("select set_config('request.jwt.claim.sub',$1,true)",[ids[0]]);await db.query("set local role authenticated");empresa=(await fixtureRpc(db,"criar_empresa",["OTP Teste","CPF","52998224725"]));await db.query("reset role");
+  const centro=(await db.query("insert into public.centros_custo(empresa_id,nome) values($1,'Setor OTP') returning id",[empresa])).rows[0].id;await db.query("set local role authenticated");
+  const c=(await fixtureRpc(db,"operar_planejamento",[empresa,null,null,"criar",{nome:"Teste",ano:2026,request_id:randomUUID()}])).id,token=randomBytes(32).toString("hex");
+  await fixtureRpc(db,"operar_planejamento",[empresa,c,1,"convite",{centro_custo_id:centro,email,token_hash:createHash("sha256").update(token).digest("hex"),expira_em:new Date(Date.now()+86400000).toISOString()}]);await db.query("commit");await db.query("reset role");
+  await page.goto(`/contribuicoes/${token}`);const generated=await admin.auth.admin.generateLink({type:"magiclink",email});if(generated.error)throw new Error("Falha ao gerar OTP de teste.");const otp=generated.data.properties.email_otp;
+  await page.getByLabel("E-mail para confirmar",{exact:true}).fill(email);await page.getByLabel("Código recebido por e-mail",{exact:true}).fill((otp[0]==="0"?"1":"0")+otp.slice(1));await page.getByRole("button",{name:"Confirmar código",exact:true}).click();await expect(page.getByRole("alert").filter({hasText:"Código inválido"})).toBeVisible();await expect(page.getByLabel("E-mail para confirmar",{exact:true})).toHaveValue(email);
+  await page.getByLabel("Código recebido por e-mail",{exact:true}).fill(otp);const correctForm=await page.getByRole("button",{name:"Confirmar código",exact:true}).evaluate((button,expected)=>{const data=new FormData((button as HTMLButtonElement).form!);return {email:data.get("email")===expected.email,code:data.get("codigo")===expected.code};},{email,code:otp});expect(correctForm).toEqual({email:true,code:true});const request=page.waitForRequest(r=>r.method()==="POST");await page.getByRole("button",{name:"Confirmar código",exact:true}).click();expect((await request).postData()?.includes(otp)).toBe(true);await expect(page.getByRole("button",{name:"Enviar contribuição",exact:true})).toBeVisible();expect((await db.query("select count(*)::int n from public.usuarios_empresas where usuario_id=$1",[ids[1]])).rows[0].n).toBe(0);
+ }finally{await db.query("rollback").catch(()=>{});await db.query("reset role").catch(()=>{});try{if(empresa)await db.query("delete from public.empresas where id=$1",[empresa]);}finally{await db.end();}for(const id of ids){const {error}=await admin.auth.admin.deleteUser(id);if(error)throw new Error("Falha ao remover fixture OTP.");}}
+});

@@ -13,7 +13,7 @@ maquete.
 
 ## Stack
 
-Next.js (App Router, TypeScript) + Supabase (Postgres, Auth). Tailwind v4 (CSS-first, `@theme`
+Next.js (App Router, TypeScript) + Supabase (Postgres, Auth) + **shadcn/ui**. Tailwind v4 (CSS-first, `@theme`
 em `globals.css`, sem `tailwind.config.ts`) por cima dos design tokens em `src/styles/tokens/`
 — não redefina cor/espaçamento direto em Tailwind, aponte pro token.
 
@@ -32,13 +32,29 @@ aconteceu de quebrar: `middleware.ts` virou `proxy.ts` nesta versão.
 - **Dois tipos de senha, não confundir:** a senha de login (Supabase Auth) e a "senha de
   aprovação" de 6 dígitos (criada pelo usuário, sem sequência/repetição, valida pagamentos) —
   tabela própria, hash, nunca no client.
-- **Design system portado sob demanda** (`src/components/core/…`), não tudo de uma vez. Ordem:
-  core → forms → feedback → data → navigation → financial (mesma hierarquia do protótipo).
-  Mantenha os mesmos nomes de prop já validados no protótipo (`variant`, `size`, `icon`…).
+- **Design system com shadcn/ui**, componentes em `src/components/ui/`, adicionados sob demanda.
+  Novas telas usam a API do shadcn; componentes de negócio podem compor essas primitivas.
+  Tokens Finbast permanecem em `src/styles/tokens/`; `globals.css` faz a ponte semântica.
+  Não copiar componentes do protótipo. O port legado em `src/components/core/` serve de
+  referência e será substituído gradualmente. Ver `docs/design-system.md` e `/styleguide`.
 - **Server Components por padrão.** Só `"use client"` quando precisar de estado, evento de
   DOM ou hook — como o `Button` (tem `useState` para hover/press).
 
-## Comandos
+## Roteiro E2E obrigatório
+
+`testes-e2e-completo.md` é o roteiro cumulativo de jornadas, inspirado no modelo do Nutrigg.
+Leia-o junto de `prd.md` e `plan.md` antes de iniciar uma funcionalidade.
+**Toda nova funcionalidade, correção de comportamento ou mudança de permissão exige atualizar
+esse arquivo na mesma entrega.** Inclua ações, resultados esperados, casos negativos, isolamento,
+concorrência e evidências; atualize também os cenários futuros que passaram a ser implementados.
+Preserve IDs; acrescente novos casos sem renumerar os anteriores. Diferencie implementado,
+planejado, decisão em aberto, teste automatizado e conferência manual. Não afirmar execução
+manual ou integração externa que não ocorreu. Registre data, ambiente, comando/spec, resultados
+e limitações da rodada no histórico. Não considerar a entrega pronta com roteiro desatualizado.
+Nunca inclua credenciais, tokens, PIN real ou dados pessoais reais no roteiro. Ele deve permanecer
+versionável; as restrições do Nutrigg para arquivos contendo segredos não se aplicam a este roteiro.
+
+## Comandos de desenvolvimento e verificação
 
 ```
 npm run dev      # servidor local, localhost:3000

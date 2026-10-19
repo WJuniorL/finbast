@@ -5,14 +5,14 @@ const variants = ["primary", "secondary", "outline", "ghost", "destructive", "su
 const sizes = ["sm", "md", "lg"] as const;
 
 async function checkSupabase() {
-  // Não existe tabela nenhuma ainda (Fase 3). Consultar uma que não existe de propósito:
+  // Consultar uma tabela de teste inexistente confirma uma resposta da Data API:
   // se voltar PGRST205 (PostgREST: "tabela não encontrada no schema cache"), a conexão está
   // viva — chegou no banco, autenticou e o PostgREST respondeu de forma específica. Erro de
   // rede/timeout apareceria como outra coisa bem diferente (fetch failed, ECONNREFUSED etc.).
   const supabase = await createClient();
   const { error } = await supabase.from("_conexao_probe_").select("*").limit(1);
-  if (error?.code === "PGRST205") return { ok: true, detail: "Conectado — banco vazio, como esperado antes da Fase 3." };
-  if (error) return { ok: false, detail: `${error.code ?? "erro"}: ${error.message}` };
+  if (error?.code === "PGRST205") return { ok: true, detail: "Data API acessível. Este teste não verifica schema, RLS ou autenticação." };
+  if (error) return { ok: false, detail: "Não foi possível verificar a conexão agora." };
   return { ok: true, detail: "Conectado." };
 }
 

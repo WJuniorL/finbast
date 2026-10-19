@@ -16,12 +16,18 @@ sistema, sem gateway, sem plano — isso é fase 2, documentado mas não constru
 
 ## Escopo do MVP
 
+**Decisão técnica de interface (13/10/2026):** utilizar **shadcn/ui** com Tailwind v4,
+preservando a identidade visual Finbast (tokens existentes, Manrope e JetBrains Mono).
+Novas telas compõem componentes de `src/components/ui/`. Guia visual em `/styleguide`;
+convenções em `docs/design-system.md`. Esta decisão não amplia o escopo funcional do MVP.
+
 | Módulo | Status |
 |---|---|
 | Sub-contas (CNPJ/CPF) + usuários e permissões | Entra — base de tudo (RLS por `empresa_id`) |
 | Contas a Pagar / Receber | Entra — baixa manual, sem emissão de boleto/PIX |
 | Contas bancárias + conciliação | Entra — só por importação de arquivo (CSV/XLSX/OFX) |
 | Fluxo de caixa | Entra |
+| Dashboard | Entra — caixa, títulos, custos fixos e pendências por empresa/mês |
 | Planejamento e Simulador | Entra — o diferencial do produto |
 | Custos fixos | Entra — flag na categoria, não é o mesmo que recorrência |
 | Custo e precificação de produto | Entra — direto / compartilhado (rateio) / geral, nunca ratear geral na margem de contribuição |
@@ -48,10 +54,16 @@ sistema, sem gateway, sem plano — isso é fase 2, documentado mas não constru
   (percentual por categoria/fornecedor); geral (imposto, aluguel) fica fora da margem de
   contribuição por padrão — ratear geral no resultado do produto é a armadilha clássica do
   custeio por absorção, mostrar separado.
+  Implementação e critérios de consulta/arredondamento em `docs/produtos.md`; estimativas
+  de preço/volume são enviadas explicitamente ao Planejamento, sem criar títulos financeiros.
 - **Planejamento:** uma aba só, três momentos do mesmo dado — cenário (real + camada de plano),
   contribuições dos líderes de setor (link individual, código por e-mail, nunca entra
   automático no cenário) e planejado × realizado depois que o mês fecha. Planejado nunca vira
   lançamento em Contas a Pagar.
+- **DRE e relatórios:** gerenciais por vencimento/original ou liquidação/efetivo; não inferir
+  competência contábil sem campo próprio. Classificação por categoria, filtros/detalhes e
+  exportação integral CSV/XLSX seguem `docs/relatorios.md`. Bruto livre; formatado registra
+  evento, sem cotas/cobrança no MVP.
 
 ## Fora de escopo — não construir sem decisão nova
 

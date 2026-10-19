@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-16T13:21:15.284Z",
+  "browser": "Microsoft Edge / Playwright",
+  "passed": 24,
+  "checks": [
+    "58 arquivos visuais originais preservados byte a byte",
+    "Ficha no desktop identica em pixels a renderizacao isolada do componente original",
+    "desktop: layout sem transbordamento, mensagens amplas e paineis acessiveis",
+    "notebook: layout sem transbordamento, mensagens amplas e paineis acessiveis",
+    "tablet: layout sem transbordamento, mensagens amplas e paineis acessiveis",
+    "tablet-retrato: layout sem transbordamento, mensagens amplas e paineis acessiveis",
+    "Baloes alinhados as duas bordas uteis do chat, sem coluna central limitada",
+    "desktop: arraste reajusta chat, limites, teclado, duplo clique e memoria por faixa",
+    "notebook: arraste reajusta chat, limites, teclado, duplo clique e memoria por faixa",
+    "Redimensionamento funciona quando o armazenamento do navegador esta bloqueado",
+    "TopBar e navegacao originais; busca global separada das categorias locais do inbox",
+    "Uma navegacao principal; nome/horario, mensagem e operacao em niveis separados",
+    "Filtro de nao lidos + tags, contador, chips, teclado e limpar filtros",
+    "Grupos e Minhas funcionam entre categorias; estado vazio oferece saida",
+    "Combinacao E/OU das tags e filtro por numero do WhatsApp",
+    "Busca por nome sem acento e telefone formatado",
+    "Seta, fixar/desafixar e nao lida; posicao real da fila nao muda ao fixar",
+    "Rascunhos por contato, resposta e nota interna sem envio acidental",
+    "Busca nas mensagens, destaque e resposta citada",
+    "Anexos, documento local, emoji e assistente de escrita continuam acessiveis",
+    "Assumir/liberar, transferir, lembrar, fechar/reabrir e menu compacto",
+    "Limpar e apagar exigem confirmacao; cancelar preserva a conversa de exemplo",
+    "Ficha reutilizada mantem recolhimento de secoes e editor original de tags",
+    "Visualizador alterna desktop, notebook e tablet nas duas orientacoes"
+  ],
+  "layouts": [
+    {
+      "name": "desktop",
+      "width": 1920,
+      "height": 1080,
+      "chatWidth": 1144,
+      "messageAreaHeight": 803
+    },
+    {
+      "name": "notebook",
+      "width": 1366,
+      "height": 768,
+      "chatWidth": 934,
+      "messageAreaHeight": 491
+    },
+    {
+      "name": "tablet",
+      "width": 1024,
+      "height": 768,
+      "chatWidth": 628,
+      "messageAreaHeight": 483
+    },
+    {
+      "name": "tablet-retrato",
+      "width": 768,
+      "height": 1024,
+      "chatWidth": 672,
+      "messageAreaHeight": 741
+    }
+  ],
+  "copiedOriginalFiles": 58,
+  "sidebarPixelIdentical": true,
+  "pageErrors": [],
+  "externalRequests": []
+}

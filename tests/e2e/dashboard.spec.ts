@@ -1,0 +1,38 @@
+import {test,expect,type Page} from "@playwright/test";
+import {createClient} from "@supabase/supabase-js";
+import {randomUUID} from "node:crypto";
+import {databaseClient} from "../../scripts/db-client.mjs";
+import {dashboardFixture} from "../../scripts/dashboard-fixture.mjs";
+test("Dashboard: indicadores, gráfico, custos fixos, atalhos e isolamento",async({page,browser})=>{
+ test.setTimeout(180000);
+ const created:string[]=[],prefix=randomUUID(),password=`Test-${randomUUID()}!`,emails=[`dash-owner-${prefix}@example.com`,`dash-reader-${prefix}@example.com`];
+ const admin=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.SUPABASE_SECRET_KEY??process.env.SERVICE_ROLE!,{auth:{persistSession:false,autoRefreshToken:false}}),db=databaseClient(),otherContext=await browser.newContext();
+ async function login(current:Page,email:string){await current.goto("/login");await current.getByLabel("E-mail",{exact:true}).fill(email);await current.getByLabel("Senha",{exact:true}).fill(password);await current.getByRole("button",{name:"Entrar",exact:true}).click();await expect(current).toHaveURL(/\/empresas$/);}
+ const amount=(label:string)=>page.getByTestId(`dashboard-${label}`);
+ try {
+  await db.connect();for(const email of emails){const {data,error}=await admin.auth.admin.createUser({email,password,email_confirm:true});if(error||!data.user)throw new Error("Falha ao criar fixture do Dashboard.");created.push(data.user.id);}
+  await db.query("begin");const fixture=await dashboardFixture(db,created[0]);await db.query("reset role");await db.query("insert into public.usuarios_empresas(empresa_id,usuario_id,papel) values($1,$2,'leitura')",[fixture.empresa,created[1]]);await db.query("commit");
+  const base=`/empresas/${fixture.empresa}`,path=`${base}/dashboard`;
+  await login(page,emails[0]);await page.goto(base);await page.getByRole("link",{name:"Abrir Dashboard",exact:true}).click();await expect(page.getByRole("heading",{name:"Dashboard",exact:true})).toBeVisible();
+  await page.getByLabel("Mês de referência",{exact:true}).fill("2026-01");await page.getByRole("button",{name:"Atualizar Dashboard",exact:true}).click();
+  await expect(amount("Saldo realizado final")).toHaveText("R$ 1.079,00");await expect(amount("Saldo projetado final")).toHaveText("R$ 1.056,00");await expect(amount("Variação de caixa no mês")).toHaveText("R$ 129,00");await expect(amount("A pagar em aberto no mês")).toHaveText("R$ 32,00");await expect(page.getByTestId("dashboard-custos-fixos")).toHaveText("R$ 125,00");await expect(page.getByTestId("dashboard-pendentes")).toHaveText("0 movimento(s) pendente(s)");
+  await page.getByLabel("Dia para consultar",{exact:true}).fill("2026-01-31");await expect(page.getByTestId("dashboard-dia-saldos")).toHaveText("31/01/2026 · Realizado: R$ 1.079,00 · Projetado: R$ 1.056,00");
+  const fixedCard=page.getByRole("heading",{name:"Custos fixos do mês",exact:true}).locator('xpath=ancestor::div[@data-slot="card"]');await expect(fixedCard).toContainText("R$ 12,00");await expect(fixedCard).toContainText("R$ 23,00");await expect(fixedCard).toContainText("R$ 34,00");
+  await page.getByRole("link",{name:"Consultar custos fixos do mês",exact:true}).click();await expect(page).toHaveURL(/\/pagar\?.*fixo=sim/);await expect(page.locator("#pagar-fixo")).toHaveValue("sim");await page.goto(`${path}?mes=2026-01`);
+  await page.getByRole("link",{name:"Ver fluxo de caixa",exact:true}).click();await expect(page).toHaveURL(/\/fluxo-caixa\?inicio=2026-01-01&fim=2026-01-31/);await expect(page.getByTestId("Saldo realizado final")).toHaveText("R$ 1.079,00");await page.goto(`${path}?mes=2026-01`);
+  await page.getByRole("link",{name:"Pagamento previsto",exact:true}).click();await expect(page).toHaveURL(new RegExp(`/pagar/${fixture.aberto.id}$`));await page.goto(`${path}?mes=2026-01`);
+  await page.getByLabel("Mês de referência",{exact:true}).fill("2026-02");await page.getByRole("button",{name:"Atualizar Dashboard",exact:true}).click();await expect(amount("A pagar em aberto no mês")).toHaveText("R$ 82,00");await expect(page.getByTestId("dashboard-custos-fixos")).toHaveText("R$ 18,00");await expect(page.getByLabel("Dia para consultar",{exact:true})).toHaveValue("2026-02-01");
+  await page.goto(`${path}?mes=2026-13`);await expect(page.getByRole("alert").filter({hasText:"Escolha um mês"})).toBeVisible();await expect(amount("Saldo realizado final")).toHaveCount(0);
+  await page.goto(`${path}?mes=2026-01&mes=2026-02`);await expect(page.getByRole("alert").filter({hasText:"Escolha um mês"})).toBeVisible();
+  await page.goto(`${base}/bancos/${fixture.conta}`);await page.getByLabel("Arquivo CSV, XLSX ou OFX",{exact:true}).setInputFiles({name:"dashboard.csv",mimeType:"text/csv",buffer:Buffer.from("data;descricao;valor;identificador\n31/01/2026;Tarifa Dashboard;-1,00;dash-tarifa\n")});await page.getByRole("button",{name:"Gerar prévia",exact:true}).click();await expect(page.getByRole("heading",{name:"Prévia de importação",exact:true})).toBeVisible();await page.getByRole("button",{name:"Confirmar importação",exact:true}).click();await expect(page.getByText("Importação concluída: 1 importado(s), 0 ignorado(s).",{exact:true}).last()).toBeVisible();
+  await page.goto(`${path}?mes=2026-01`);await expect(amount("Saldo realizado final")).toHaveText("R$ 1.078,00");await expect(page.getByTestId("dashboard-pendentes")).toHaveText("1 movimento(s) pendente(s)");await page.getByRole("link",{name:"Tarifa Dashboard",exact:true}).click();await expect(page).toHaveURL(new RegExp(`/bancos/${fixture.conta}/movimentos/[a-f0-9-]+$`));await page.goto(`${path}?mes=2026-01`);
+  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);await page.screenshot({path:"test-results/dashboard-mobile.png"});await page.setViewportSize({width:1280,height:900});await page.screenshot({path:"test-results/dashboard.png",fullPage:true});
+  const reader=await otherContext.newPage();await login(reader,emails[1]);await reader.goto(`${path}?mes=2026-01`);await expect(reader.getByTestId("dashboard-Saldo realizado final")).toHaveText("R$ 1.078,00");await expect(reader.getByRole("button",{name:"Salvar",exact:true})).toHaveCount(0);
+  await db.query("begin");await db.query("select set_config('request.jwt.claim.sub',$1,true)",[created[1]]);await db.query("set local role authenticated");const other=(await db.query("select public.criar_empresa('Dashboard vazio','CPF','11144477735') as id")).rows[0].id;await db.query("commit");await db.query("reset role");
+  expect((await page.goto(`/empresas/${other}/dashboard?mes=2026-01`))?.status()).toBe(404);await reader.goto(`/empresas/${other}/dashboard?mes=2026-01`);await expect(reader.getByTestId("dashboard-Saldo realizado final")).toHaveText("R$ 0,00");await expect(reader.getByText("Nenhum título aberto neste mês.",{exact:true})).toBeVisible();await expect(reader.getByText("Nenhum custo fixo neste mês.",{exact:true})).toBeVisible();
+  await db.query("delete from public.usuarios_empresas where empresa_id=$1 and usuario_id=$2",[fixture.empresa,created[1]]);expect((await reader.goto(`${path}?mes=2026-01`))?.status()).toBe(404);
+ }finally {
+  await otherContext.close();await db.query("rollback").catch(()=>{});await db.query("reset role").catch(()=>{});try{if(created.length)await db.query("delete from public.empresas where dono_id=any($1::uuid[])",[created]);}finally{await db.end();}
+  for(const id of created){const {error}=await admin.auth.admin.deleteUser(id);if(error)throw new Error("Falha na remoção da fixture do Dashboard.");}
+ }
+});

@@ -3,8 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 /**
  * Roda em todo request (ver src/proxy.ts) só pra manter a sessão do Supabase Auth
- * atualizada nos cookies. Ainda não redireciona nada — quando a Fase 5 (auth real) começar,
- * é aqui que entra "sem sessão -> manda pro /login".
+ * atualizada nos cookies. Páginas e Server Actions também verificam a sessão.
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -29,7 +28,20 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Necessário para manter o token válido — não remover.
-  await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
+
+  const protectedPath = request.nextUrl.pathname === "/empresas" ||
+    request.nextUrl.pathname.startsWith("/empresas/") || request.nextUrl.pathname === "/atualizar-senha";
+  if (protectedPath && (error || !data.user)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = "";
+    const response = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach((cookie) => response.cookies.set(cookie));
+    response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  }
+  supabaseResponse.headers.set("Cache-Control", "private, no-store");
 
   return supabaseResponse;
 }

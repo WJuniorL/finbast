@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prévia — Menu de conversa no inbox</title>
+  <style>
+    :root { color-scheme: light; --blue: #086391; --ink: #174867; --muted: #7390a4; --line: #e4edf2; --pale: #e7f5fc; --danger: #c5444d; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #eff4f7; color: var(--ink); font: 14px/1.5 "Segoe UI", system-ui, sans-serif; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 2px solid #1689b8; outline-offset: 3px; }
+    button { -webkit-tap-highlight-color: transparent; }
+    svg { width: 19px; height: 19px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+    .page { width: min(1080px, calc(100% - 64px)); margin: 42px auto 26px; }
+    .intro { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 25px; }
+    .eyebrow { margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: 1.7px; color: var(--blue); text-transform: uppercase; }
+    h1 { font-size: 27px; font-weight: 600; letter-spacing: -.7px; margin: 0 0 6px; }
+    .intro p:last-child { margin: 0; color: #6d8596; font-size: 13px; }
+    .preview-tag { display: flex; align-items: center; gap: 7px; padding: 7px 12px; border: 1px solid #d5e4ed; border-radius: 20px; font-size: 11px; color: #52778e; white-space: nowrap; }
+    .preview-tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #278aab; }
+    .app { display: grid; grid-template-columns: 420px 1fr; height: 650px; background: white; border: 1px solid #dce6ec; border-radius: 15px; box-shadow: 0 15px 48px #244d6610, 0 2px 7px #244d6605; overflow: hidden; }
+    .inbox { min-width: 0; border-right: 1px solid var(--line); background: #fcfdfe; display: flex; flex-direction: column; }
+    .inbox-header { padding: 23px 21px 18px; border-bottom: 1px solid var(--line); }
+    .title-row { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; }
+    h2 { font-size: 19px; font-weight: 600; letter-spacing: -.35px; margin: 0; }
+    .total { background: #edf4f8; border-radius: 6px; padding: 1px 7px; font-size: 11px; color: #6d8b9f; }
+    .search { display: flex; align-items: center; gap: 9px; height: 37px; background: #f2f6f9; border: 1px solid #e8eff4; border-radius: 7px; padding: 0 11px; color: #92a9b9; }
+    .search svg { width: 16px; height: 16px; }
+    .search input { min-width: 0; width: 100%; background: transparent; border: 0; outline: 0; color: var(--ink); font-size: 12px; }
+    .search input::placeholder { color: #8a9fac; }
+    .list-label { display: flex; justify-content: space-between; padding: 12px 21px 10px; font-size: 10px; font-weight: 600; letter-spacing: .8px; color: #7f9aac; text-transform: uppercase; }
+    .list-label span:last-child { font-weight: 400; letter-spacing: 0; text-transform: none; }
+    .conversations { overflow: auto; flex: 1; scrollbar-width: thin; scrollbar-color: #cfdae2 transparent; }
+    .conversation { position: relative; display: flex; align-items: center; gap: 4px; min-height: 81px; padding: 0 12px 0 18px; border-left: 2px solid transparent; border-bottom: 1px solid var(--line); }
+    .conversation.selected { border-left-color: #087dab; background: var(--pale); }
+    .conversation:hover:not(.selected) { background: #f1f7fa; }
+    .conversation-main { display: flex; align-items: center; gap: 12px; min-width: 0; width: 100%; text-align: left; color: inherit; border: 0; background: none; padding: 10px 0; }
+    .avatar { position: relative; display: grid; place-items: center; width: 41px; height: 41px; flex: none; border-radius: 50%; color: #50738a; background: #e4edf2; font-size: 12px; font-weight: 500; letter-spacing: .5px; }
+    .avatar.sand { background: #ece1d2; color: #8b7355; }
+    .avatar.lilac { background: #e7e6f2; color: #827b9e; }
+    .avatar.sage { background: #e0ede6; color: #6b8b7b; }
+    .avatar.rose { background: #f3e5e6; color: #ad7c84; }
+    .avatar::before { content: ""; position: absolute; bottom: 0; left: 0; width: 7px; height: 7px; border: 2px solid #fcfdfe; border-radius: 50%; background: #9daeb9; }
+    .channel { position: absolute; bottom: -1px; right: -3px; width: 16px; height: 16px; background: #17a662; border: 2px solid white; border-radius: 50%; display: grid; place-items: center; color: white; }
+    .channel svg { width: 10px; height: 10px; stroke-width: 1.9; }
+    .contact-copy { min-width: 0; flex: 1; }
+    .waiting { display: flex; align-items: center; gap: 5px; color: #6189a4; font-size: 10px; margin-bottom: 2px; }
+    .position { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: #d9effb; color: #2c7da9; font-size: 9px; }
+    .name-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .contact-name { color: #165279; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pinned-icon { width: 12px; height: 12px; color: #608ca6; transform: rotate(30deg); }
+    .message-preview { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #7490a3; font-size: 12px; margin-top: 1px; }
+    .conversation.unread .contact-name { font-weight: 600; }
+    .conversation.unread .message-preview { color: #376d8f; }
+    .row-actions { flex: none; display: flex; align-items: center; gap: 5px; padding-left: 2px; }
+    .unread-badge { background: #087fa9; color: white; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 10px; display: grid; place-items: center; font-size: 10px; }
+    .menu-trigger { width: 27px; height: 27px; border-radius: 6px; background: transparent; border: 1px solid transparent; color: #6d94ad; display: grid; place-items: center; transition: background .15s; }
+    .menu-trigger:hover, .menu-trigger[aria-expanded="true"] { color: #006c9e; background: #d1eaf8; border-color: #c1e0f1; }
+    .menu-trigger svg { width: 15px; height: 15px; transition: transform .15s; }
+    .menu-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+    .conversation-pane { min-width: 0; display: flex; flex-direction: column; background: #f6f9fb; }
+    .chat-header { display: flex; align-items: center; gap: 11px; min-height: 79px; padding: 15px 23px; background: white; border-bottom: 1px solid var(--line); }
+    .chat-header .avatar { width: 36px; height: 36px; font-size: 11px; }
+    .chat-name { font-size: 13px; font-weight: 600; }
+    .chat-status { font-size: 10px; color: #819aa9; margin-top: 2px; }
+    .chat-channel { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 10px; color: #62927b; background: #eff8f3; padding: 4px 7px; border-radius: 5px; }
+    .chat-channel svg { width: 12px; height: 12px; }
+    .chat-body { position: relative; flex: 1; padding: 27px 27px 20px; }
+    .date { display: table; margin: 0 auto 31px; color: #9bb0bd; font-size: 10px; }
+    .bubble { max-width: 270px; padding: 12px 14px 8px; background: white; border: 1px solid #e8eff3; border-radius: 1px 11px 11px 11px; color: #6a879b; font-size: 12px; }
+    .bubble time { display: block; text-align: right; color: #a5b7c1; font-size: 9px; margin-top: 6px; }
+    .bubble.outgoing { margin: 19px 0 0 auto; background: #eaf3f9; border-color: #e0edf5; border-radius: 11px 1px 11px 11px; }
+    .bubble.outgoing time { color: #7fa5bd; }
+    .chat-empty { margin: 60px 0 0; text-align: center; color: #8ba3b3; font-size: 12px; }
+    .helper { position: absolute; bottom: 32px; left: 28px; right: 28px; display: flex; align-items: flex-start; gap: 10px; border: 1px dashed #cfdfE9; background: #f1f7fb; padding: 13px 15px; border-radius: 8px; color: #7c98ab; font-size: 11px; }
+    .helper svg { width: 17px; height: 17px; margin-top: 1px; color: #6c9ab7; }
+    .helper strong { color: #487b9c; font-weight: 600; display: block; margin-bottom: 3px; }
+    .composer { height: 68px; padding: 14px 21px; background: white; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 12px; color: #9ab1c0; }
+    .composer-placeholder { flex: 1; padding: 10px 13px; background: #f6f9fb; border-radius: 7px; font-size: 11px; color: #9aadb9; }
+    .send-icon { color: #76a0ba; }
+    .menu { position: fixed; z-index: 20; width: 244px; padding: 6px; border: 1px solid #dde7ee; border-radius: 11px; background: white; box-shadow: 0 12px 34px #1e4b6b22, 0 3px 9px #1e4b6b09; }
+    [hidden] { display: none !important; }
+    .menu-item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 43px; padding: 10px 12px; border: 0; border-radius: 6px; background: none; color: #36596e; font-size: 12px; text-align: left; }
+    .menu-item svg { width: 17px; height: 17px; color: #65889f; stroke-width: 1.65; }
+    .menu-item:hover, .menu-item:focus-visible { background: #edf6fc; color: #096491; outline: none; }
+    .menu-item:hover svg, .menu-item:focus-visible svg { color: #0b78a5; }
+    .menu-separator { height: 1px; background: #edf1f5; margin: 5px 7px; }
+    .menu-item.danger, .menu-item.danger svg { color: var(--danger); }
+    .menu-item.danger:hover, .menu-item.danger:focus-visible { background: #fff2f3; }
+    .footer { margin: 17px 2px 0; display: flex; justify-content: space-between; align-items: center; gap: 15px; color: #7d96a7; font-size: 11px; }
+    .footer strong { font-weight: 500; color: #4c7a97; }
+    .reset { padding: 4px 0; background: none; border: 0; color: #4d85a6; font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
+    .toast { position: fixed; left: 50%; bottom: 25px; transform: translateX(-50%); z-index: 40; background: #164f70; color: white; padding: 11px 18px; border-radius: 9px; box-shadow: 0 5px 20px #17486720; font-size: 12px; max-width: calc(100vw - 32px); }
+    dialog { width: min(390px, calc(100vw - 36px)); color: var(--ink); border: 1px solid var(--line); padding: 25px; border-radius: 14px; box-shadow: 0 18px 80px #17486730; }
+    dialog::backdrop { background: #18384c40; }
+    dialog h3 { margin: 0 0 8px; font-size: 17px; font-weight: 600; }
+    dialog p { margin: 0 0 22px; color: #6e889b; font-size: 12px; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .dialog-actions button { border: 1px solid #dce7ed; border-radius: 6px; background: white; padding: 8px 13px; color: var(--ink); font-size: 12px; }
+    .dialog-actions .confirm { background: var(--blue); border-color: var(--blue); color: white; }
+    .dialog-actions .confirm.danger { background: var(--danger); border-color: var(--danger); }
+    .empty { padding: 30px 20px; text-align: center; color: var(--muted); font-size: 12px; }
+    @media (max-width: 780px) {
+      .page { width: min(440px, calc(100% - 28px)); margin-top: 24px; }
+      .intro { margin-bottom: 19px; }
+      h1 { font-size: 23px; }
+      .intro p:last-child { font-size: 12px; }
+      .preview-tag { display: none; }
+      .app { grid-template-columns: minmax(0, 1fr); height: 650px; }
+      .inbox { border-right: 0; }
+      .conversation-pane { display: none; }
+      .conversation { padding-left: 12px; padding-right: 10px; }
+      .conversation-main { gap: 9px; }
+      .contact-name { font-size: 13px; }
+      .row-actions { gap: 3px; }
+      .footer { align-items: flex-start; font-size: 10px; }
+      .footer span { max-width: 235px; }
+      .reset { white-space: nowrap; font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+    <symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="pin" viewBox="0 0 24 24"><path d="m9 3 6 0-1 6 4 4v2H6v-2l4-4-1-6Z M12 15v6"/></symbol>
+    <symbol id="unpin" viewBox="0 0 24 24"><path d="M3 3 21 21M9 3h6l-1 6 4 4v2h-3M9 9l-3 4v2h5M12 17v4"/></symbol>
+    <symbol id="unread" viewBox="0 0 24 24"><path d="M20 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h8 M3 7l8 6 5-4"/><circle cx="19" cy="5" r="3" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="clear" viewBox="0 0 24 24"><path d="m15 3 6 6-11 11H6l-4-4L15 3Z M8 10l6 6M10 20h11"/></symbol>
+    <symbol id="trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></symbol>
+    <symbol id="whatsapp" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 1-12 7L3 20l1.5-5A8 8 0 1 1 20 11Z"/><path d="M8 7c0 5 4 8 8 8l1-3-3-1-1 1-2-2 1-1-1-3-3 1Z"/></symbol>
+    <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.1"/></symbol>
+    <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="send" viewBox="0 0 24 24"><path d="m3 3 18 9-18 9 4-9-4-9ZM7 12h14"/></symbol>
+  </svg>
+  <main class="page">
+    <header class="intro">
+      <div>
+        <p class="eyebrow">Inbox · Prévia de interface</p>
+        <h1>Menu de ações da conversa</h1>
+        <p>A seta ocupa o lugar do horário repetido. O tempo de espera continua acima do nome.</p>
+      </div>
+      <span class="preview-tag">Prévia interativa</span>
+    </header>
+    <div class="app">
+      <section class="inbox" aria-label="Lista de conversas">
+        <div class="inbox-header">
+          <div class="title-row"><h2>Conversas</h2><span class="total" id="total">6</span></div>
+          <label class="search"><svg aria-hidden="true"><use href="#search"/></svg><input id="search-input" type="search" aria-label="Buscar conversa" placeholder="Buscar uma conversa"></label>
+        </div>
+        <div class="list-label"><span>Em atendimento</span><span>Mais antigas primeiro</span></div>
+        <div id="conversations" class="conversations"></div>
+      </section>
+      <section class="conversation-pane" aria-label="Conversa selecionada">
+        <div class="chat-header">
+          <div class="avatar sand" id="chat-avatar">AN</div>
+          <div><div class="chat-name" id="chat-name">Alexandre Coelho Nunes</div><div class="chat-status">Em atendimento</div></div>
+          <span class="chat-channel"><svg aria-hidden="true"><use href="#whatsapp"/></svg>WhatsApp</span>
+        </div>
+        <div class="chat-body">
+          <span class="date">Hoje</span>
+          <div class="bubble">Olá! Pode me ajudar?<time>09:40</time></div>
+          <div class="bubble outgoing">Olá, Alexandre! Claro, como posso ajudar?<time>09:42 · ✓✓</time></div>
+          <p class="chat-empty" hidden>Nenhuma mensagem nesta conversa.</p>
+          <div class="helper"><svg aria-hidden="true"><use href="#info"/></svg><div><strong>As ações ficam na própria conversa</strong>Clique nas setas para experimentar o menu.<br>Ao fixar, a opção muda para “Desafixar conversa”.</div></div>
+        </div>
+        <div class="composer" aria-hidden="true"><svg><use href="#plus"/></svg><div class="composer-placeholder">Escreva uma mensagem...</div><svg class="send-icon"><use href="#send"/></svg></div>
+      </section>
+    </div>
+    <footer class="footer"><span><strong>Modelo visual</strong> · Ações simuladas, sem alterar conversas reais.</span><button class="reset" id="reset">Reiniciar prévia</button></footer>
+  </main>
+  <div class="menu" id="conversation-menu" role="menu" aria-label="Ações da conversa" hidden></div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <dialog id="confirmation" aria-labelledby="confirmation-title" aria-describedby="confirmation-copy">
+    <h3 id="confirmation-title"></h3><p id="confirmation-copy"></p>
+    <form method="dialog" class="dialog-actions"><button value="cancel">Cancelar</button><button value="confirm" class="confirm" id="confirm-action">Confirmar</button></form>
+  </dialog>
+  <script>
+    const original = [
+      { id: 1, name: 'Alexandre Coelho Nunes', initials: 'AN', color: 'sand', hours: 20, message: 'Até 2', unread: 0, pinned: false },
+      { id: 2, name: 'Sara da Silva Moraes', initials: 'SM', color: 'rose', hours: 20, message: 'Certo, obrigada pelo retorno!', unread: 0, pinned: false },
+      { id: 3, name: 'Luis Pacheco', initials: 'LP', color: '', hours: 19, message: '⚠️ IMPORTANTE Nossos produtos seminovos…', unread: 0, pinned: false },
+      { id: 4, name: 'João Victor Ferraz', initials: 'JF', color: 'sage', hours: 18, message: '???', unread: 0, pinned: false },
+      { id: 5, name: 'Yanca', initials: 'YA', color: 'lilac', hours: 18, message: 'Preto', unread: 0, pinned: false },
+      { id: 6, name: 'Ingrid Fagundes', initials: 'IF', color: 'sand', hours: 18, message: 'Tirar o lixo Guardar os pratos Depois que imprimir…', unread: 5, pinned: false },
+    ];
+    const list = document.getElementById('conversations');
+    const menu = document.getElementById('conversation-menu');
+    const dialog = document.getElementById('confirmation');
+    const search = document.getElementById('search-input');
+    let conversations = structuredClone(original);
+    let selected = 1;
+    let openId = null;
+    let returnFocus = null;
+    let pendingAction = null;
+    let toastTimer;
+    const icon = name => `<svg aria-hidden="true"><use href="#${name}"/></svg>`;
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+    const fold = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
+    function render() {
+      const shown = conversations.filter(c => fold(c.name).includes(fold(search.value))).sort((a, b) => Number(b.pinned) - Number(a.pinned) || a.id - b.id);
+      document.getElementById('total').textContent = conversations.length;
+      list.innerHTML = shown.map(c => `<div class="conversation ${c.id === selected ? 'selected' : ''} ${c.unread ? 'unread' : ''}" data-id="${c.id}">
+        <button class="conversation-main" data-select="${c.id}" aria-label="Abrir conversa com ${escapeHtml(c.name)}" ${c.id === selected ? 'aria-current="true"' : ''}>
+          <span class="avatar ${c.color}">${c.initials}<span class="channel">${icon('whatsapp')}</span></span>
+          <span class="contact-copy"><span class="waiting"><span class="position">${c.id}º</span>Aguardando há ${c.hours} horas</span>
+            <span class="name-row"><span class="contact-name">${escapeHtml(c.name)}</span>${c.pinned ? '<svg class="pinned-icon" aria-label="Conversa fixada"><use href="#pin"/></svg>' : ''}</span>
+            <span class="message-preview" style="display:block">${escapeHtml(c.message)}</span>
+          </span>
+        </button>
+        <div class="row-actions">${c.unread ? `<span class="unread-badge" aria-label="${c.unread} mensagens não lidas">${c.unread}</span>` : ''}<button class="menu-trigger" data-menu="${c.id}" aria-label="Ações da conversa com ${escapeHtml(c.name)}" aria-haspopup="menu" aria-controls="conversation-menu" aria-expanded="false">${icon('chevron')}</button></div>
+      </div>`).join('') || '<p class="empty">Nenhuma conversa encontrada.</p>';
+      const current = conversations.find(c => c.id === selected);
+      document.getElementById('chat-name').textContent = current?.name || 'Selecione uma conversa';
+      document.getElementById('chat-avatar').textContent = current?.initials || '—';
+      document.getElementById('chat-avatar').className = `avatar ${current?.color || ''}`;
+      document.querySelector('.bubble.outgoing').firstChild.textContent = current ? `Olá, ${current.name.split(' ')[0]}! Claro, como posso ajudar?` : 'Selecione uma conversa para começar.';
+      document.querySelectorAll('.bubble').forEach(bubble => { bubble.hidden = !current || !!current.cleared; });
+      document.querySelector('.chat-empty').hidden = !!current && !current.cleared;
+    }
+    function closeMenu(focus = false) {
+      menu.hidden = true;
+      document.querySelectorAll('[aria-expanded="true"]').forEach(button => button.setAttribute('aria-expanded', 'false'));
+      openId = null;
+      if (focus && returnFocus?.isConnected) returnFocus.focus();
+    }
+    function positionMenu() {
+      if (menu.hidden || !returnFocus?.isConnected) return;
+      const rect = returnFocus.getBoundingClientRect();
+      const bounds = menu.getBoundingClientRect();
+      const left = Math.max(10, Math.min(rect.left - 8, window.innerWidth - bounds.width - 10));
+      const top = rect.bottom + 7 + bounds.height <= window.innerHeight - 10 ? rect.bottom + 7 : Math.max(10, rect.top - bounds.height - 7);
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+    }
+    function openMenu(id, button, focus = false) {
+      if (openId === id) { closeMenu(true); return; }
+      closeMenu();
+      const c = conversations.find(item => item.id === id);
+      if (!c) return;
+      openId = id;
+      returnFocus = button;
+      button.setAttribute('aria-expanded', 'true');
+      menu.setAttribute('aria-label', `Ações da conversa com ${c.name}`);
+      menu.innerHTML = `<button class="menu-item" role="menuitem" data-action="pin">${icon(c.pinned ? 'unpin' : 'pin')}<span>${c.pinned ? 'Desafixar conversa' : 'Fixar conversa'}</span></button>
+        <button class="menu-item" role="menuitem" data-action="unread">${icon('unread')}<span>Marcar como não lida</span></button>
+        <div class="menu-separator" role="separator"></div>
+        <button class="menu-item" role="menuitem" data-action="clear">${icon('clear')}<span>Limpar conversa</span></button>
+        <button class="menu-item danger" role="menuitem" data-action="delete">${icon('trash')}<span>Apagar conversa</span></button>`;
+      menu.hidden = false;
+      positionMenu();
+      if (focus) menu.querySelector('button').focus();
+    }
+    function notify(message) {
+      clearTimeout(toastTimer);
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.hidden = false;
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
+    }
+    list.addEventListener('click', event => {
+      const trigger = event.target.closest('[data-menu]');
+      if (trigger) { openMenu(Number(trigger.dataset.menu), trigger, event.detail === 0); return; }
+      const select = event.target.closest('[data-select]');
+      if (!select) return;
+      closeMenu();
+      selected = Number(select.dataset.select);
+      const c = conversations.find(item => item.id === selected);
+      c.unread = 0;
+      render();
+    });
+    list.addEventListener('keydown', event => {
+      const trigger = event.target.closest('[data-menu]');
+      if (trigger && event.key === 'ArrowDown') { event.preventDefault(); openMenu(Number(trigger.dataset.menu), trigger, true); }
+    });
+    menu.addEventListener('click', event => {
+      const action = event.target.closest('[data-action]')?.dataset.action;
+      const c = conversations.find(item => item.id === openId);
+      if (!action || !c) return;
+      closeMenu();
+      if (action === 'pin' || action === 'unread') {
+        if (action === 'pin') { c.pinned = !c.pinned; notify(c.pinned ? 'Conversa fixada no topo da lista.' : 'Conversa desafixada.'); }
+        else { c.unread = Math.max(1, c.unread); notify('Conversa marcada como não lida.'); }
+        render();
+        list.querySelector(`[data-menu="${c.id}"]`)?.focus();
+      } else {
+        pendingAction = { action, id: c.id };
+        document.getElementById('confirmation-title').textContent = action === 'delete' ? 'Apagar conversa?' : 'Limpar conversa?';
+        document.getElementById('confirmation-copy').textContent = action === 'delete'
+          ? 'Nesta prévia, apenas a conversa de exemplo será removida da lista. Você pode restaurá-la em “Reiniciar prévia”.'
+          : 'Nesta prévia, o exemplo ficará sem mensagens. O contato continuará na lista de conversas.';
+        const confirm = document.getElementById('confirm-action');
+        confirm.textContent = action === 'delete' ? 'Apagar conversa' : 'Limpar conversa';
+        confirm.className = `confirm ${action === 'delete' ? 'danger' : ''}`;
+        dialog.showModal();
+        dialog.querySelector('[value="cancel"]').focus();
+      }
+    });
+    dialog.addEventListener('close', () => {
+      if (dialog.returnValue === 'confirm' && pendingAction) {
+        const { id, action } = pendingAction;
+        if (action === 'delete') {
+          conversations = conversations.filter(c => c.id !== id);
+          if (selected === id) selected = conversations[0]?.id || null;
+          notify('Conversa removida da prévia.');
+        } else {
+          const c = conversations.find(item => item.id === id);
+          if (c) { c.message = 'Conversa sem mensagens'; c.unread = 0; c.cleared = true; }
+          notify('Mensagens limpas nesta prévia.');
+        }
+        render();
+        (list.querySelector(`[data-menu="${id}"]`) || list.querySelector('[data-menu]') || document.getElementById('reset')).focus();
+      } else if (returnFocus?.isConnected) returnFocus.focus();
+      pendingAction = null;
+    });
+    menu.addEventListener('keydown', event => {
+      const items = [...menu.querySelectorAll('[role="menuitem"]')];
+      const index = items.indexOf(document.activeElement);
+      if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault();
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+        items[next].focus();
+      }
+      if (event.key === 'Tab') closeMenu(true);
+    });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && openId !== null) { event.preventDefault(); closeMenu(true); } });
+    document.addEventListener('click', event => { if (!menu.contains(event.target) && !event.target.closest('[data-menu]')) closeMenu(); });
+    search.addEventListener('input', () => { closeMenu(); render(); });
+    list.addEventListener('scroll', () => closeMenu(), { passive: true });
+    window.addEventListener('resize', positionMenu);
+    window.addEventListener('scroll', positionMenu, { passive: true });
+    document.getElementById('reset').addEventListener('click', () => {
+      closeMenu(); conversations = structuredClone(original); selected = 1; search.value = ''; render();
+      notify('Prévia restaurada.');
+      requestAnimationFrame(() => openMenu(1, list.querySelector('[data-menu="1"]')));
+    });
+    render();
+    requestAnimationFrame(() => openMenu(1, list.querySelector('[data-menu="1"]')));
+  </script>
+</body>
+</html>

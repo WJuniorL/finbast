@@ -1,0 +1,111 @@
+/* Offline boundaries only. The original sidebar JSX and visual primitives are unchanged. */
+import { useEffect, useState } from 'react';
+import { ptBR } from 'date-fns/locale';
+
+const translate = text => text;
+const user = {
+  id: 'preview-agent', name: 'Juliana', full_name: 'Juliana Silva', email: 'juliana@example.test',
+  is_platform_admin: false, avatar_url: null,
+  organizations: [
+    { organization_id: 'preview-org', organization_name: 'Estallo', role: 'manager' },
+    { organization_id: 'preview-org-other', organization_name: 'Empresa demonstração', role: 'manager' },
+  ],
+};
+const activeOrg = { orgId: 'preview-org', name: 'Estallo', role: 'manager', capacidades_ligadas: [], modulos_ligados: [] };
+const tags = ['cliente', 'interesse em iphone', 'retorno'];
+export const useT = () => translate;
+export const useLocaleDeData = () => ptBR;
+export const useAuth = () => ({ user, activeOrg, signOut: async () => signal('Saída de exemplo. Sua sessão real permanece ativa.') });
+export const useUser = () => user;
+export const useActiveOrg = () => activeOrg;
+export const useCorDaEtiqueta = () => null;
+export const useEtiquetasDaEntidade = () => tags.map(nome => ({ nome, tag: nome, entidade: 'contact', cor: null }));
+export const useRoteirosDoContato = () => ({ data: [], isLoading: false });
+const defaultPipeline = { data: { pipeline: { id: 'preview-pipeline' }, stages: [] }, isLoading: false, isError: false };
+export const useDefaultPipeline = () => defaultPipeline;
+export function useTagsDoContato(contactId, initial) {
+  const [value, setValue] = useState(initial);
+  useEffect(() => setValue(initial), [contactId]);
+  return { tags: value, aplicar: setValue };
+}
+const signal = text => window.dispatchEvent(new CustomEvent('preview:notice', { detail: text }));
+export const toast = { success: signal, error: signal, warning: signal };
+function localMutation() {
+  return { isPending: false, mutate: (_input, options) => { signal('Ação demonstrativa — nenhum dado real foi alterado.'); options?.onSuccess?.(); } };
+}
+export const useWinLead = localMutation;
+export const useBulkAction = localMutation;
+export const useTasks = () => ({ criarTarefa: async () => signal('Tarefa de exemplo criada.') });
+export default function Link({ href, children, ...props }) {
+  return <a {...props} href={href} onClick={event => { event.preventDefault(); signal('Este link pertence à ficha original do contato. Navegação simulada nesta prévia.'); }}>{children}</a>;
+}
+function ExternalAction({ open, aberto, onOpenChange, aoMudarAbertura, onClose, titulo }) {
+  useEffect(() => {
+    if (open === false || aberto === false) return;
+    signal(titulo ? `Dossiê: ${titulo}. Abertura simulada nesta prévia.` : 'Ação da ficha original. Formulário completo disponível no sistema.');
+    onOpenChange?.(false); aoMudarAbertura?.(false); onClose?.();
+  }, [open, aberto]);
+  return null;
+}
+export const NewLeadDialog = ExternalAction;
+export const LoseLeadDialog = ExternalAction;
+export const LeadDossierDoFunil = ExternalAction;
+export const FormularioDeTarefa = ExternalAction;
+
+// Keep the original application shell; replace only its external data/actions.
+export function MobileSidebar() { return null; }
+export function CommandPalette({ open, onOpenChange }) {
+  useEffect(() => {
+    if (!open) return;
+    window.dispatchEvent(new Event('preview:global-search'));
+    onOpenChange(false);
+  }, [open]);
+  return null;
+}
+const transition = { begin() {}, cancel() {} };
+export const useOrganizationTransition = () => transition;
+export const setActiveOrg = async () => ({ ok: false, error: 'Prévia visual' });
+export const toggleSidebar = async () => { window.dispatchEvent(new Event('preview:toggle-navigation')); };
+export const trocarIdioma = async () => ({ ok: false });
+export const useIdioma = () => 'pt-BR';
+export const useAplicarIdioma = () => () => signal('Seleção de idioma demonstrativa.');
+const theme = { theme: 'system', setTheme: () => signal('Alternância de tema demonstrativa.') };
+export const useTheme = () => theme;
+const central = { data: { items: [], open_count: 10 } };
+export const useAgentInbox = () => central;
+export const useSonsDaCentral = () => {};
+export const useFunisFixados = () => ({ fixados: [] });
+const brand = { name: 'Estallo CRM', initial: 'E', logoUrl: null, logoDarkUrl: null };
+export const useMarcaDaInstalacao = () => brand;
+export const useConversationCounts = () => ({ data: { fila: 8 } });
+export const useCases = () => ({ data: { cases: [] } });
+export const useChannelSessions = () => ({ data: [], isError: false });
+export const deriveOverallHealth = () => 'connected';
+export const useSystemVersion = () => ({ data: null });
+export const usePathname = () => '/app/inbox';
+
+const now = new Date('2026-10-16T09:30:00-03:00');
+const ago = hours => new Date(now.getTime() - hours * 3600000).toISOString();
+export const apiClient = {
+  async get(url) {
+    if (!url.includes('/crm-summary')) throw new Error('Consulta fora da prévia.');
+    return { data: {
+      enrichment: {
+        name: 'Coelho Nunes Comércio', category: 'Comércio e serviços', address: 'Vitória da Conquista · BA',
+        rating: null, reviews: null, website: null, emails: [], socials: [], maps_url: null, collected_at: ago(24),
+      },
+      leads: [{
+        id: 'preview-lead', title: 'Interesse em iPhone 15 Pro', status: 'open', value_cents: 459000,
+        currency: 'BRL', updated_at: ago(1), pipeline_id: 'preview-pipeline', custom_fields: {}, field_defs: [],
+        funil_nome: 'Vendas', etapa_nome: 'Em negociação', stage_id: 'negociacao',
+      }], leads_total: 1,
+      orders: [], activities: [{ id: 'activity-1', type: 'conversation_created', actor_kind: 'contact', performed_by_name: 'Cliente', performed_at: ago(21) }],
+      demandas: [], fatos: [], historico: [],
+    } };
+  },
+  async post(url) {
+    if (url.includes('/knowledge/busca')) return { data: { trechos: [], melhorSimilaridade: null, motivo: 'Prévia visual: acervo de exemplo vazio.', acervo: { fontes: 0, limiar: .7 } } };
+    signal('Ação simulada nesta prévia.'); return { data: {} };
+  },
+  async patch() { signal('Ação simulada nesta prévia.'); return { data: {} }; },
+};

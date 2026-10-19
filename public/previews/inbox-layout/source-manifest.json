@@ -1,0 +1,297 @@
+{
+  "source": "estallo-crm",
+  "generated": "2026-10-16T13:14:54.970Z",
+  "note": "Componentes e tokens copiados byte a byte. Somente dados, autenticacao e destinos de acoes externas usam adaptadores locais de demonstracao.",
+  "files": [
+    {
+      "file": "app/globals.css",
+      "sha256": "4585bc5d6ca5dcb3fdb01de4a19ff4c914e5fad517b4d00c431c135a47c019a8",
+      "bytes": 70242
+    },
+    {
+      "file": "components/branding/MarcaDoProduto.tsx",
+      "sha256": "114f8ebf3d389a3e634e42905c5ee59f22a5f8d26c63e6e4bf47428b4726a7ad",
+      "bytes": 1848
+    },
+    {
+      "file": "components/connections/ConnectionHealthDot.tsx",
+      "sha256": "d1782191e7591491444a02e40513f8353ddf034a988e5a47c3d59e4de53669f5",
+      "bytes": 1613
+    },
+    {
+      "file": "components/contacts/RoteirosDoContato.tsx",
+      "sha256": "b1601426f966e78fd7b0a8dbe56c18ed43fb13e56f51c189be738bf1fccce324",
+      "bytes": 2865
+    },
+    {
+      "file": "components/inbox/AcervoSearch.tsx",
+      "sha256": "7dacff738143dff35a21c0340162764a5ffedcf5edd310be268f5b1f97f53261",
+      "bytes": 5920
+    },
+    {
+      "file": "components/inbox/ContactTagsEditor.tsx",
+      "sha256": "842210ab211b2facff6190e72094a08e9370425b1a9c6f94f381211e30e73af1",
+      "bytes": 1317
+    },
+    {
+      "file": "components/inbox/CRMSidePanel.tsx",
+      "sha256": "63f75344a675d3cb685ad93027d2564785d8e135650df489dae1ba1ec5d9de10",
+      "bytes": 48859
+    },
+    {
+      "file": "components/inbox/LeadEnrichment.tsx",
+      "sha256": "aedeac1aafe6b4c800554a5d29a262ad1003e999ca473ca14d26c05d3458920b",
+      "bytes": 4571
+    },
+    {
+      "file": "components/shell/AlertsBell.tsx",
+      "sha256": "b8a3928b73108693b61423e4512a6dafaee9fa2c5cca62239c11246096475e4a",
+      "bytes": 1919
+    },
+    {
+      "file": "components/shell/AvisoDePropostaEmDestaque.tsx",
+      "sha256": "03d53d0cbf70158d98eb630199b6a6b676d7bd60831df39af083b3ceb726ef09",
+      "bytes": 5331
+    },
+    {
+      "file": "components/shell/ContadorDaFila.tsx",
+      "sha256": "b2384ce0c10690682b9b1261cd8d32b1668bbed46b70148d13a9d5ef73056119",
+      "bytes": 1569
+    },
+    {
+      "file": "components/shell/ContadorDeCasos.tsx",
+      "sha256": "a83fd1fe3b400325a73848135d566352d7855f1fa5db430791ff13013b8ec952",
+      "bytes": 1362
+    },
+    {
+      "file": "components/shell/SearchTrigger.tsx",
+      "sha256": "067ef753d28ccb40216cf5e2b03e65e57ac7d0ba82749db4a037cd7fb4a4cb6f",
+      "bytes": 1259
+    },
+    {
+      "file": "components/shell/SeletorDeIdioma.tsx",
+      "sha256": "75cbe09c586dea916a82a2525ed7495548befa0f9953476a5c6fa5f38c5c1daa",
+      "bytes": 4858
+    },
+    {
+      "file": "components/shell/Sidebar.tsx",
+      "sha256": "ab49674cec9042dafae8fab1f9122f44f8a0d2fbe51102e809250fed617fef7f",
+      "bytes": 24358
+    },
+    {
+      "file": "components/shell/TenantSwitcher.tsx",
+      "sha256": "a14a7807ee99bb8aa5c0f4367ef54654eb3fcefc281b31dfb66623041f1b451b",
+      "bytes": 4261
+    },
+    {
+      "file": "components/shell/TopBar.tsx",
+      "sha256": "e038d4f746e00141789ccf358c1d2db856c0e3fc6467fdb18fc702764414a744",
+      "bytes": 1300
+    },
+    {
+      "file": "components/shell/UserMenu.tsx",
+      "sha256": "00bd2d86bf326fadeb5b36981f9b89f771f961ce1514236e83d5877c0240297e",
+      "bytes": 4184
+    },
+    {
+      "file": "components/shell/VersionFooter.tsx",
+      "sha256": "a8cae7de301bfe3eeb4dc8e09c6363d5c47cb9eb4b7c0d498a895e26a887cbc4",
+      "bytes": 2494
+    },
+    {
+      "file": "components/tags/ChipDeEtiqueta.tsx",
+      "sha256": "ec946a4095d99ba22cf89ed2a270025c1d5c6ebe86f91d0187e354bd78846031",
+      "bytes": 3142
+    },
+    {
+      "file": "components/tags/PontoDaEtiqueta.tsx",
+      "sha256": "b0b153ed837b313fa9ccc10c41b6b04b69ef8cc9bac8c557ab2e04b8b57b14dd",
+      "bytes": 1404
+    },
+    {
+      "file": "components/tags/SeletorDeTags.tsx",
+      "sha256": "871acf065e590a58261252d569021f3a0a90f11a4bc8b001610a2a3070f374ca",
+      "bytes": 6449
+    },
+    {
+      "file": "components/theme/theme-toggle.tsx",
+      "sha256": "3394c316def78ad2e32e283f224fad7b98a448928ab44cbc44cb53f749beab26",
+      "bytes": 1953
+    },
+    {
+      "file": "components/ui/alert-dialog.tsx",
+      "sha256": "13b3eabdabae2deb59a90cbe697a4643dc27053e97317afa382279d3c3f16912",
+      "bytes": 4359
+    },
+    {
+      "file": "components/ui/avatar.tsx",
+      "sha256": "e78b35ed76c67d8ff50603fbe0dfa4fe600097bd860d89e65beea3e16683dad8",
+      "bytes": 1419
+    },
+    {
+      "file": "components/ui/badge.tsx",
+      "sha256": "506225b3b8917c22a778efee9d0e44952c440f6ed96eca060474dfd69de1f19e",
+      "bytes": 1675
+    },
+    {
+      "file": "components/ui/bloco-recolhivel.tsx",
+      "sha256": "cc570e24bd23bd4c475537c2d52c2f921f69c8c18ce728c25def89fd9f6fe7ea",
+      "bytes": 3173
+    },
+    {
+      "file": "components/ui/button.tsx",
+      "sha256": "c282f9ee0656d28d06a634c5532b4c925bdb146edc092b8cfd4eae7ff272844a",
+      "bytes": 4039
+    },
+    {
+      "file": "components/ui/card.tsx",
+      "sha256": "f3fd6ee54f7c9e84a7e764811e993fcccccb4b7ab1db55b4e26f7286d4ea88f4",
+      "bytes": 1901
+    },
+    {
+      "file": "components/ui/dropdown-menu.tsx",
+      "sha256": "dd920212fd901fc725eca4bba09d9a4794c8c49319991a1631cbee640ec95ceb",
+      "bytes": 8390
+    },
+    {
+      "file": "components/ui/input.tsx",
+      "sha256": "c93de27e2a4a037183c01a3a7ad256b42d20344be1599667513da6333c765ebb",
+      "bytes": 2669
+    },
+    {
+      "file": "components/ui/popover.tsx",
+      "sha256": "fb8256723362cc72474b2bf452cf5e2f294a6a12b3dc5cecf1512e601035f849",
+      "bytes": 1042
+    },
+    {
+      "file": "components/ui/skeleton.tsx",
+      "sha256": "5dc872ced002ba6608721518f3f8ab3304c10972f0a064e801df7df56356d2ba",
+      "bytes": 3295
+    },
+    {
+      "file": "lib/api/types.ts",
+      "sha256": "f4969bb327fe5c2e79df11cc9d6997f310787d297e86d5735b5bbe293d6f32f9",
+      "bytes": 606
+    },
+    {
+      "file": "lib/atendimento/proximo-passo-padrao.ts",
+      "sha256": "acffdf52f38d747bd1c8d44be99322c5c5539f480d9fda194c49c86be4c74293",
+      "bytes": 793
+    },
+    {
+      "file": "lib/auth/types.ts",
+      "sha256": "85d2ab9208d5ae32594bd54d404dce586783144a080dafb6b35ecbfb1f3e07ba",
+      "bytes": 12713
+    },
+    {
+      "file": "lib/branding.ts",
+      "sha256": "42c905f641c578c179efe2654a1c20a95d15a909bc6ee525ae765cd32c7bc768",
+      "bytes": 1863
+    },
+    {
+      "file": "lib/branding/contraste.ts",
+      "sha256": "67273924ef1aa31e05df2080b4114085a0d9ee4dca54864bb3ec5c0c5413ebbe",
+      "bytes": 37860
+    },
+    {
+      "file": "lib/branding/desenho.ts",
+      "sha256": "354808a01b13b58fb0e8c2979ba118ce44d75e100607ff780104e912558ae969",
+      "bytes": 12511
+    },
+    {
+      "file": "lib/branding/rampa.ts",
+      "sha256": "54bf5d55f6552f31860126424b7b3e14b409fed28cec5c489ff808e39321f422",
+      "bytes": 11298
+    },
+    {
+      "file": "lib/channels/phone-variants.ts",
+      "sha256": "738ec8af3d1e150271ce4fcde7a3cd12073f4745e304a5e72235b3a8144ac8f0",
+      "bytes": 4037
+    },
+    {
+      "file": "lib/contacts/rotulo-do-contato.ts",
+      "sha256": "18805ea3f37787100de8e717ef43431b6a2b404bdc0afdfa290aac07da96a6d0",
+      "bytes": 6150
+    },
+    {
+      "file": "lib/contacts/tag-normalizada.ts",
+      "sha256": "9b552496b0e58d54661a2320dec3faf926b22bedad807344efbfd36f3581b568",
+      "bytes": 2484
+    },
+    {
+      "file": "lib/followup/edge-condition-options.ts",
+      "sha256": "11f5e54d729192bec8763d0d1a893b2cd1c05e10d172f6212a66905c6f3c6520",
+      "bytes": 1958
+    },
+    {
+      "file": "lib/followup/eventos-legiveis.ts",
+      "sha256": "2dbfa55c0d393e3634c1e092ce798e6219eb5e3da5508278ba58d2c4bc42892e",
+      "bytes": 25526
+    },
+    {
+      "file": "lib/followup/graph-schema.ts",
+      "sha256": "3f9edc9eefde9a0df99fc993f1180c4a564650bbb2d5f4e4f96a1bd94211f83d",
+      "bytes": 37165
+    },
+    {
+      "file": "lib/followup/vocabulario.ts",
+      "sha256": "ae4f5bea2d9e32ee437292e996da684a2dc497466b7464e0c298ec0b0e59b9af",
+      "bytes": 26675
+    },
+    {
+      "file": "lib/i18n/registro.ts",
+      "sha256": "b0f972c914d3b98094c5edef4e685fea1ce26152f1b5ee793c6deb80eaccd20e",
+      "bytes": 5895
+    },
+    {
+      "file": "lib/inbox/larguras-do-inbox.ts",
+      "sha256": "02d2d8afe05995d24309b3380db618a16a7b5d43fc0b6c6b27a6a72039e2e4b6",
+      "bytes": 8561
+    },
+    {
+      "file": "lib/leads/activity-vocabulary.ts",
+      "sha256": "1f0c46915763450c48580154561600b1a9a53435259bf491160663360ef80415",
+      "bytes": 21002
+    },
+    {
+      "file": "lib/navigation/catalogo.ts",
+      "sha256": "7e815bb29982eb558dbd6859734bbcb998b532cbe61ed0dd87b2c1814c531da1",
+      "bytes": 49191
+    },
+    {
+      "file": "lib/navigation/interface.ts",
+      "sha256": "133208d8d3bceb50ba68e080fa3b48003c2faddfbb51b683355cdb016748fb34",
+      "bytes": 11015
+    },
+    {
+      "file": "lib/navigation/registry.ts",
+      "sha256": "e9ca3f75ff5a54d661d8719c9a91a04e841be0867aedcb36a576841c380af801",
+      "bytes": 4646
+    },
+    {
+      "file": "lib/prospecting/schema.ts",
+      "sha256": "e1409d397e865caf3f9867dad50b4a33ec42d526ed5d33b34e7d6c0cb07ffb67",
+      "bytes": 6784
+    },
+    {
+      "file": "lib/tags/cor-da-etiqueta.ts",
+      "sha256": "8efa8df4de778f2df2ae11c77a3e1fe4892a7389677df1dd4236123506446d61",
+      "bytes": 12235
+    },
+    {
+      "file": "lib/tarefas/tipos.ts",
+      "sha256": "9fbb10925b5f228bb32b1b9bf6dffd54e738b235b2822d79c4c8bd99ad1def06",
+      "bytes": 8097
+    },
+    {
+      "file": "lib/ui/icons.ts",
+      "sha256": "7b44ed36bb8895b9d5b82051dbae30c1b09118f313f0532005843eead3204838",
+      "bytes": 3346
+    },
+    {
+      "file": "lib/utils.ts",
+      "sha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+      "bytes": 169
+    }
+  ]
+}
