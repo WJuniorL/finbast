@@ -187,8 +187,8 @@ criação de cada tabela.
   reexecutados até Produtos sem falha. A regressão foi interrompida por ECONNRESET ao
   alternar para relatórios e este módulo foi rodado isoladamente.
 - ✅ Spec `tests/e2e/relatorios.spec.ts` passou (1,6 min) em build local na porta 3100.
-- ⚠️ Advisors: `public.rls_auto_enable()` (SECURITY DEFINER) executável por anon/authenticated,
-  proteção contra senhas vazadas desativada (painel Auth). Não vieram desta entrega; revisar.
+- ✅ Advisors: `public.rls_auto_enable()` (função do event trigger `ensure_rls`) teve o EXECUTE revogado de anon/authenticated em `20261019190000_revoke_rls_auto_enable.sql`; DDL com o trigger segue funcionando.
+  Resta só "proteção contra senhas vazadas" desativada (painel Auth, ação manual).
 - **Próxima entrega:** etapa 11 (cotas de uso e demais módulos) e etapa 12.
 
 ## Decisões em aberto (não travar sessão por causa delas, mas não presumir resposta)
