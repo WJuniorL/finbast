@@ -194,6 +194,7 @@ criação de cada tabela.
   banco e spec do Dashboard passaram. Cotas ficam de fora (PRD); contagem de "lançamento" segue decisão em aberto.
 - ✅ Etapa 12: `20261019210000_perfil_usuarios.sql` (`listar_acessos`, `sair_da_empresa`), UI de renomear,
   remover acesso e sair. 16 verificações de banco e spec `app.spec.ts` passaram.
+- ✅ Regressão completa de 19/10/2026: 1.299 verificações de banco, 43 unidades, build/tsc/lint e os 10 specs de navegador passaram.
 - **Próxima entrega:** deploy
   na Vercel, SMTP/OTP real e regressão completa (`test:db` + `test:e2e`).
 
