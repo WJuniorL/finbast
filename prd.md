@@ -37,7 +37,8 @@ convenções em `docs/design-system.md`. Esta decisão não amplia o escopo func
 | Medição de uso (só o registro do evento) | Entra |
 | "Botões de demanda" (registrar interesse em feature futura) | Entra — sem painel de gestão |
 | Conta de Pagamento (BaaS), boleto/PIX, Open Finance, cobrança/planos | **Fase 2** |
-| Painel do Contador, Assistente de IA | A avaliar — não presumir que entra |
+| Painel do Contador | **Fora do MVP** (decisão de 19/10/2026) — só o botão de demanda mede interesse. O contador usa o app como membro da empresa (Completo ou Leitura) |
+| Assistente de IA | A avaliar — não presumir que entra |
 | CRM, estoque, emissão de nota fiscal | **Nunca** — não é ERP |
 
 ## Regras de negócio que viram código

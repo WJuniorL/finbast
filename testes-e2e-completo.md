@@ -1014,11 +1014,11 @@ R$ 105,00 pagos com encargos/desconto e R$ 3,03 avulsos. Arquivar preserva assoc
 
 **Implementação:** Não implementado · **Automação:** Sem cobertura completa
 
-**Status:** 🧭 decisão pendente · **Última rodada:** — · **Resultado:** —
+**Status:** 🧭 Painel do Contador: **fora do MVP** (decisão de 19/10/2026). Assistente de IA: decisão pendente · **Última rodada:** — · **Resultado:** —
 
-**Ações:** Confirmar entrada no MVP antes de elaborar testes definitivos.
+**Ações:** Não há painel a testar. Contadores usam as telas normais como membros (Completo/Leitura, T088 e convites). O interesse no painel é medido pelo botão de demanda do Dashboard (T087).
 
-**Esperado:** Decisão de produto em aberto; não considerar ausência como bug.
+**Esperado:** Ausência do painel não é bug. Reabrir este cenário se a decisão mudar; a IA segue em aberto.
 
 ### T090 — Deploy e e-mails reais
 

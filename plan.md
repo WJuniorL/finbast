@@ -57,7 +57,7 @@ criação de cada tabela.
 10. ✅ DRE e Relatórios + exportação
 11. ✅ Medição de uso + botões de demanda — registro de eventos (Pagar, Receber, bancos, Planejamento, Produtos, cadastros) e botões de demanda no Dashboard; **sem cotas** (PRD: fora do MVP)
 12. ✅ Perfil/Usuários — e-mails dos acessos, renomear conta, remover acesso e sair da conta
-13. ⬜ Painel do Contador — só depois do núcleo (1–10); confirmar que entra no MVP antes de começar
+13. ⛔ Painel do Contador — **fora do MVP** (decisão de 19/10/2026); contador segue como membro por convite. Reavaliar após o MVP, com base nos botões de demanda
 
 ## Checkpoint de 13/10/2026
 
@@ -194,12 +194,13 @@ criação de cada tabela.
   banco e spec do Dashboard passaram. Cotas ficam de fora (PRD); contagem de "lançamento" segue decisão em aberto.
 - ✅ Etapa 12: `20261019210000_perfil_usuarios.sql` (`listar_acessos`, `sair_da_empresa`), UI de renomear,
   remover acesso e sair. 16 verificações de banco e spec `app.spec.ts` passaram.
-- **Próxima entrega:** etapa 13 (Painel do Contador) só após confirmar que entra no MVP; antes, deploy
+- **Próxima entrega:** deploy
   na Vercel, SMTP/OTP real e regressão completa (`test:db` + `test:e2e`).
 
 ## Decisões em aberto (não travar sessão por causa delas, mas não presumir resposta)
 
-- Painel do Contador e Assistente de IA entram no MVP?
+- ~~Painel do Contador entra no MVP?~~ Decidido em 19/10/2026: **não**.
+- Assistente de IA entra no MVP?
 - O que conta como "um lançamento" pro limite mensal da fase 2 (uso importado? parcela conta
   como 1 ou N?)
 - Prazo e critério de "pronto" do MVP
