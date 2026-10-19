@@ -58,6 +58,7 @@ criação de cada tabela.
 11. ✅ Medição de uso + botões de demanda — registro de eventos (Pagar, Receber, bancos, Planejamento, Produtos, cadastros) e botões de demanda no Dashboard; **sem cotas** (PRD: fora do MVP)
 12. ✅ Perfil/Usuários — e-mails dos acessos, renomear conta, remover acesso e sair da conta
 13. ⛔ Painel do Contador — **fora do MVP** (decisão de 19/10/2026); contador segue como membro por convite. Reavaliar após o MVP, com base nos botões de demanda
+14. ⬜ Assistente de IA — **entra no MVP** (decisão de 19/10/2026); escopo, provedor/modelo e limites de segurança a definir antes de codar
 
 ## Checkpoint de 13/10/2026
 
@@ -201,7 +202,7 @@ criação de cada tabela.
 ## Decisões em aberto (não travar sessão por causa delas, mas não presumir resposta)
 
 - ~~Painel do Contador entra no MVP?~~ Decidido em 19/10/2026: **não**.
-- Assistente de IA entra no MVP?
+- ~~Assistente de IA entra no MVP?~~ Decidido em 19/10/2026: **sim**. Em aberto: o que ele faz, provedor/modelo e privacidade dos dados.
 - O que conta como "um lançamento" pro limite mensal da fase 2 (uso importado? parcela conta
   como 1 ou N?)
 - Prazo e critério de "pronto" do MVP

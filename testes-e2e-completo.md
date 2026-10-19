@@ -1014,11 +1014,11 @@ R$ 105,00 pagos com encargos/desconto e R$ 3,03 avulsos. Arquivar preserva assoc
 
 **Implementação:** Não implementado · **Automação:** Sem cobertura completa
 
-**Status:** 🧭 Painel do Contador: **fora do MVP** (decisão de 19/10/2026). Assistente de IA: decisão pendente · **Última rodada:** — · **Resultado:** —
+**Status:** 🧭 Painel do Contador: **fora do MVP** (decisão de 19/10/2026). Assistente de IA: **entra no MVP** (decisão de 19/10/2026), escopo a definir · **Última rodada:** — · **Resultado:** —
 
 **Ações:** Não há painel a testar. Contadores usam as telas normais como membros (Completo/Leitura, T088 e convites). O interesse no painel é medido pelo botão de demanda do Dashboard (T087).
 
-**Esperado:** Ausência do painel não é bug. Reabrir este cenário se a decisão mudar; a IA segue em aberto.
+**Esperado:** Ausência do painel não é bug. Reabrir este cenário se a decisão mudar. Assistente de IA: planejado; cenários definitivos só após fechar o escopo.
 
 ### T090 — Deploy e e-mails reais
 
