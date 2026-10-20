@@ -5,6 +5,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com). Datas em dd/mm/aaaa.
 ## [Não lançado] — 19/10/2026
 
 ### Adicionado
+- Assistente de IA: base local de ajuda antes do modelo, consulta de dados, propostas de ação com confirmação e teto diário.
 - Botões de demanda no Dashboard (interesse idempotente por usuário/recurso, sem painel de gestão).
 - Eventos de uso dos cadastros (categorias, centros, clientes, fornecedores), sem cotas.
 

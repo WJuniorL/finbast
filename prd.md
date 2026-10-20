@@ -38,7 +38,7 @@ convenções em `docs/design-system.md`. Esta decisão não amplia o escopo func
 | "Botões de demanda" (registrar interesse em feature futura) | Entra — sem painel de gestão |
 | Conta de Pagamento (BaaS), boleto/PIX, Open Finance, cobrança/planos | **Fase 2** |
 | Painel do Contador | **Fora do MVP** (decisão de 19/10/2026) — só o botão de demanda mede interesse. O contador usa o app como membro da empresa (Completo ou Leitura) |
-| Assistente de IA | **Entra no MVP** (decisão de 19/10/2026). Escopo funcional ainda a definir — ver `plan.md`, etapa 14 |
+| Assistente de IA | **Entra no MVP** (decisão de 19/10/2026): base local de ajuda na frente; agente OpenAI responde sobre os dados e propõe criar lançamentos/cadastros, sempre com confirmação; nunca baixa nem movimenta dinheiro. Ver `docs/assistente.md` |
 | CRM, estoque, emissão de nota fiscal | **Nunca** — não é ERP |
 
 ## Regras de negócio que viram código

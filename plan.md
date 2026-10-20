@@ -58,7 +58,7 @@ criação de cada tabela.
 11. ✅ Medição de uso + botões de demanda — registro de eventos (Pagar, Receber, bancos, Planejamento, Produtos, cadastros) e botões de demanda no Dashboard; **sem cotas** (PRD: fora do MVP)
 12. ✅ Perfil/Usuários — e-mails dos acessos, renomear conta, remover acesso e sair da conta
 13. ⛔ Painel do Contador — **fora do MVP** (decisão de 19/10/2026); contador segue como membro por convite. Reavaliar após o MVP, com base nos botões de demanda
-14. ⬜ Assistente de IA — **entra no MVP** (decisão de 19/10/2026); escopo, provedor/modelo e limites de segurança a definir antes de codar
+14. ✅ Assistente de IA — base local de ajuda na frente do agente (OpenAI), ferramentas de leitura, propostas com confirmação (criar Pagar/Receber/fornecedor/cliente) e teto diário. Ver `docs/assistente.md`
 
 ## Checkpoint de 13/10/2026
 
@@ -196,13 +196,16 @@ criação de cada tabela.
 - ✅ Etapa 12: `20261019210000_perfil_usuarios.sql` (`listar_acessos`, `sair_da_empresa`), UI de renomear,
   remover acesso e sair. 16 verificações de banco e spec `app.spec.ts` passaram.
 - ✅ Regressão completa de 19/10/2026: 1.299 verificações de banco, 43 unidades, build/tsc/lint e os 10 specs de navegador passaram.
+- ✅ Etapa 14 (20/10/2026): `20261020100000_assistente_teto.sql`, `src/lib/ajuda.ts`, `src/lib/assistente.ts`, tela do assistente.
+  15 verificações de banco, 4 unitários e spec de navegador com modelo real. Pendente: regressão completa,
+  edição por conversa, cenários adversariais, política de privacidade/contrato com a OpenAI antes de abrir a terceiros.
 - **Próxima entrega:** deploy
   na Vercel, SMTP/OTP real e regressão completa (`test:db` + `test:e2e`).
 
 ## Decisões em aberto (não travar sessão por causa delas, mas não presumir resposta)
 
 - ~~Painel do Contador entra no MVP?~~ Decidido em 19/10/2026: **não**.
-- ~~Assistente de IA entra no MVP?~~ Decidido em 19/10/2026: **sim**. Em aberto: o que ele faz, provedor/modelo e privacidade dos dados.
+- ~~Assistente de IA entra no MVP?~~ Decidido em 19/10/2026: **sim** (perguntas e ações, OpenAI, dados detalhados).
 - O que conta como "um lançamento" pro limite mensal da fase 2 (uso importado? parcela conta
   como 1 ou N?)
 - Prazo e critério de "pronto" do MVP

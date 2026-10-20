@@ -1426,6 +1426,54 @@ do componente sem alargar a página. Screenshot temporário `test-results/produt
 
 **Evidência:** `scripts/db-test-produtos.mjs`, `tests/produtos.test.ts`, `tests/e2e/produtos.spec.ts`.
 
+### T115 — Base local de ajuda antes do modelo
+
+**Implementação:** Implementado · **Automação:** Unidade e navegador
+
+**Status:** ✅ automatizado · **Última rodada:** 20/10/2026 · **Resultado:** passou; conferência manual pendente
+
+**Ações:** Pergunte "como lanço uma despesa". Depois clique em "Perguntar ao assistente". Repita como leitor com uma pergunta que só existe para quem edita.
+
+**Esperado:** Resposta da base com link da tela da empresa, sem chamada ao modelo e sem consumir o teto diário. O botão reenvia a mesma pergunta ao agente. Perguntas genéricas ou sobre dados ("qual meu saldo") não casam e vão ao agente. Leitor/contador leitura só recebe itens restritos.
+
+**Evidência:** `tests/ajuda.test.ts` (4 testes, uma pergunta por item), `tests/e2e/assistente.spec.ts`; regras em `docs/assistente.md`.
+
+### T116 — Agente: consulta de dados e isolamento
+
+**Implementação:** Implementado · **Automação:** Navegador (modelo real)
+
+**Status:** 🔄 cobertura parcial · **Última rodada:** 20/10/2026 · **Resultado:** passou; asserção de texto do modelo é fraca
+
+**Ações:** Pergunte "Quais fornecedores tenho cadastrados?". Tente pedir dados de outra empresa.
+
+**Esperado:** O agente usa ferramentas com a sessão do usuário (RLS): só dados da empresa ativa, sem documento, e-mail ou telefone. Respostas do modelo variam; valida-se o fluxo, não o texto. Limitação: listagens de títulos e resumo do mês ainda não têm cenário com o modelo; injeção de prompt em descrições só tem proteção no prompt, sem teste adversarial.
+
+**Evidência:** `tests/e2e/assistente.spec.ts`.
+
+### T117 — Proposta de ação com confirmação
+
+**Implementação:** Implementado · **Automação:** Navegador (modelo real)
+
+**Status:** ✅ automatizado · **Última rodada:** 20/10/2026 · **Resultado:** passou; conferência manual pendente
+
+**Ações:** Peça "Crie um fornecedor chamado Papelaria Aurora". Confirme. Como leitor, peça o mesmo.
+
+**Esperado:** Nada é gravado antes de "Confirmar e criar"; a gravação usa as mesmas regras das telas (permissão, validação, idempotência por `request_id`). Leitor não recebe proposta e nada é criado. O agente nunca baixa, estorna, aprova nem cancela, e não passa pela senha de aprovação. Lançamentos de Pagar/Receber usam o mesmo caminho, mas ainda não têm cenário próprio com o modelo; edição por conversa não existe.
+
+**Evidência:** `tests/e2e/assistente.spec.ts`.
+
+### T118 — Teto diário e concorrência
+
+**Implementação:** Implementado · **Automação:** Banco
+
+**Status:** ✅ automatizado · **Última rodada:** 20/10/2026 · **Resultado:** passou
+
+**Ações:** Registre perguntas ao modelo até o teto (40 por conta/dia) e em 12 conexões simultâneas com teto 5. Tente sem vínculo, outra empresa, limite inválido e anônimo.
+
+**Esperado:** Contagem por conta compartilhada entre os membros, exatamente 5 de 12 simultâneas, evento `assistente` por pergunta ao modelo, tabela inacessível diretamente, acessos indevidos recusados. A base local não conta.
+
+**Evidência:** `scripts/db-test-assistente.mjs` (15 verificações), migration `20261020100000_assistente_teto.sql`.
+
 ## Resumo de cobertura
 
 | Jornada | IDs |
@@ -1440,10 +1488,12 @@ do componente sem alargar a página. Screenshot temporário `test-results/produt
 | Dashboard | T080, T098–T101 |
 | Planejamento, simulador e líderes | T081–T083, T102–T107 |
 | Custo e precificação de produtos | T084, T108–T114 |
+| Perfil/usuários | T088 |
+| Assistente de IA | T115–T118 |
 | Módulos futuros do plano | T085–T090 |
 | Casos acrescentados: upload e ZIP | T091–T092 |
 
-Total: **114 cenários**. IDs planejados serão detalhados e atualizados conforme cada entrega,
+Total: **118 cenários**. IDs planejados serão detalhados e atualizados conforme cada entrega,
 sem tratar funcionalidades futuras como defeitos do módulo atual.
 
 
@@ -1604,6 +1654,7 @@ Fluxo/Dashboard → Planejamento/produtos/DRE. Eventos de uso entram junto de ca
 | 19/10/2026 | Build local :3100 + Supabase | Demanda e uso de cadastros | Migration aplicada; `db-test-demanda.mjs`: 13 verificações passaram (idempotência, papéis, isolamento, anônimo, eventos de cadastros); regressão de banco anterior reexecutada até Produtos na rodada de relatórios. Spec do Dashboard com clique do botão passou (40,9s). Build, TypeScript e lint passaram. Revogação de `rls_auto_enable` testada com DDL após a migration. Sem e-mail real; conferência manual pendente |
 | 19/10/2026 | Build local :3100 + Supabase | Perfil/usuários | Migration aplicada; `db-test-perfil.mjs`: 16 verificações passaram. Spec `app.spec.ts` ampliado (e-mail do acesso, renomear, sair da conta) passou em 1,3min após esperar a navegação em "Trocar de conta" (rótulo "Nome da conta" agora existe também na página da empresa). Build, TypeScript e lint passaram; demais specs não reexecutados. Conferência manual pendente |
 | 19/10/2026 | Build local :3100 + Supabase | Regressão completa (todos os módulos até Perfil/usuários) | `npm run test:db`: 19 scripts, 1.299 verificações de banco passaram sem falha. Build, TypeScript e lint passaram; 43 unidades passaram. `npx playwright test --output=test-results/regressao`: 10 specs passaram em 6,6min (app, bancos, dashboard, fluxo, pagar, planejamento-otp, planejamento, produtos, receber, relatorios). Fixtures revertidas/removidas; sem e-mail real; conferência manual pendente |
+| 20/10/2026 | Build local :3100 + Supabase + OpenAI (modelo real) | Assistente de IA | Migration `assistente_teto` aplicada. `db-test-assistente.mjs`: 15 verificações (inclui 12 chamadas simultâneas com teto 5 = 5 aceitas). `tests/ajuda.test.ts`: 4 testes. `assistente.spec.ts` passou (14–16s) com chamadas reais ao modelo: base local, proposta de cadastro, confirmação, consulta de cadastros, leitor sem proposta e 390px. Regressão completa ainda não reexecutada após esta entrega. Texto do modelo não é asserido com rigor; conferência manual pendente |
 
 Atualizar esta tabela a cada entrega com números efetivamente executados, falhas/ressalvas e
 o estado das funcionalidades novas. Não copiar o resultado anterior como uma nova execução.
