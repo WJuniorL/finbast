@@ -35,7 +35,7 @@ export function Chat({ empresaId, somenteLeitura }: { empresaId: string; somente
   return <div className="space-y-4">
     <div className="space-y-3" aria-live="polite">
       {itens.length === 0 && <p className="text-sm text-muted-foreground">Pergunte como usar o sistema ou sobre os dados desta conta{somenteLeitura ? "" : ", ou peça para criar um lançamento ou cadastro"}.</p>}
-      {itens.map((item, n) => <div key={n} className={item.role === "user" ? "ml-auto max-w-[85%] rounded-lg bg-primary p-3 text-primary-foreground" : "max-w-[85%] space-y-3 rounded-lg border p-3"}>
+      {itens.map((item, n) => <div key={n} data-testid="mensagem" className={item.role === "user" ? "ml-auto max-w-[85%] rounded-lg bg-primary p-3 text-primary-foreground" : "max-w-[85%] space-y-3 rounded-lg border p-3"}>
         <p className="whitespace-pre-wrap text-sm">{item.texto}</p>
         {item.resposta?.link && <Link className="block text-sm underline" href={item.resposta.link.href}>{item.resposta.link.rotulo}</Link>}
         {item.resposta?.daAjuda && n === itens.length - 1 && <Button variant="outline" size="sm" disabled={pending} onClick={() => enviar(itens[n - 1].texto, true, itens.slice(0, n))}>Perguntar ao assistente</Button>}

@@ -197,7 +197,7 @@ criação de cada tabela.
   remover acesso e sair. 16 verificações de banco e spec `app.spec.ts` passaram.
 - ✅ Regressão completa de 19/10/2026: 1.299 verificações de banco, 43 unidades, build/tsc/lint e os 10 specs de navegador passaram.
 - ✅ Etapa 14 (20/10/2026): `20261020100000_assistente_teto.sql`, `src/lib/ajuda.ts`, `src/lib/assistente.ts`, tela do assistente.
-  15 verificações de banco, 4 unitários e spec de navegador com modelo real. Regressão completa de 20/10 passou (1.314 de banco, 47 unidades, 11 specs). Pendente: edição por conversa, cenários adversariais, política de privacidade/contrato com a OpenAI antes de abrir a terceiros.
+  15 verificações de banco, 4 unitários e spec de navegador com modelo real. Regressão completa de 20/10 passou (1.314 de banco, 47 unidades, 11 specs). Revisão e testes adversariais com o modelo real (T119) passaram em 20/10; o cartão passou a formatar o valor no servidor. Pendente: edição por conversa, política de privacidade/contrato com a OpenAI antes de abrir a terceiros.
 - **Próxima entrega:** deploy
   na Vercel, SMTP/OTP real e regressão completa (`test:db` + `test:e2e`).
 

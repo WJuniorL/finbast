@@ -39,6 +39,8 @@ Item novo exige pergunta em `tests/ajuda.test.ts`. Ao mudar tela, preço ou limi
 
 ## Limites conhecidos
 
+- O teto é por conta (compartilhado entre usuários) e conta também chamadas que falham no provedor.
+- Injeção de prompt em textos do usuário pode fazer o modelo *propor* algo; a confirmação do usuário é a barreira.
 - Edição de lançamentos por conversa não existe (só criação).
 - Histórico da conversa vive no navegador; não é gravado.
 - O texto livre da pergunta e dados consultados vão à OpenAI; revisar política/contrato antes de abrir a clientes.

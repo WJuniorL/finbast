@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { guiaDoSistema } from "@/lib/ajuda";
-import { formatCentavos, hojeBahia } from "@/lib/financeiro";
+import { formatCentavos, hojeBahia, parseCentavos } from "@/lib/financeiro";
 
 // Agente de IA: só LÊ (ferramentas abaixo) e PROPÕE ações. Nada é gravado aqui; quem grava é a
 // Server Action de confirmação, com as permissões do próprio usuário (RLS) e as mesmas regras das telas.
@@ -103,9 +103,11 @@ export async function montarProposta(ctx: Ctx, raw: unknown): Promise<PropostaVi
   if (!cat) throw new Error("categoria não encontrada nesta empresa; use buscar_cadastros.");
   if (p.centro_custo_id && !centro) throw new Error("centro de custo não encontrado nesta empresa.");
   if (p.modo === "parcelado" && p.parcelas < 2) throw new Error("Parcelado exige 2 ou mais parcelas.");
+  const centavos = parseCentavos(p.valor); // recusa negativo, texto e acima do limite antes do cartão
+  if (centavos < 1) throw new Error("O valor deve ser maior que zero.");
   return { proposta: p, titulo: pagar ? "Criar conta a pagar" : "Criar conta a receber", linhas: [
     `Descrição: ${p.descricao}`, `${pagar ? "Fornecedor" : "Cliente"}: ${parte}`, `Categoria: ${cat}`, ...(centro ? [`Centro de custo: ${centro}`] : []),
-    `Valor: R$ ${p.valor}`, `Vencimento: ${p.vencimento.split("-").reverse().join("/")}`, `Modo: ${p.modo}${p.modo === "parcelado" ? ` em ${p.parcelas}x` : ""}` ] };
+    `Valor: ${formatCentavos(centavos)}`, `Vencimento: ${p.vencimento.split("-").reverse().join("/")}`, `Modo: ${p.modo}${p.modo === "parcelado" ? ` em ${p.parcelas}x` : ""}` ] };
 }
 
 const toolsLeitura = [
