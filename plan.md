@@ -8,7 +8,7 @@ uma fase por sessão, escopo pequeno.
 - ✅ Scaffold Next.js (App Router, TypeScript, Tailwind v4, ESLint)
 - ✅ Design tokens portados verbatim (`src/styles/tokens/`), fontes via `next/font`
 - ✅ Cliente Supabase (browser + server + proxy de sessão)
-- ✅ Repositório no GitHub (`estallosolucoes/finbast`), primeiro commit
+- ✅ Repositório no GitHub (`WJuniorL/finbast`), primeiro commit
 - ✅ `.env.local` com as credenciais do projeto Supabase certo
   (`ilgfcujtprcrugrnrsdh.supabase.co`)
 - ⬜ Deploy vazio na Vercel (não feito — sem CLI logada na sessão; fazer via dashboard)
