@@ -3,6 +3,10 @@ import {createClient} from "@supabase/supabase-js";
 import {randomUUID} from "node:crypto";
 import {databaseClient} from "../../scripts/db-client.mjs";
 
+// Último dia do mês corrente no fuso de private.hoje_financeiro(): a 1ª ocorrência precisa ser
+// futura para "Interromper" cancelá-la (data fixa envelhece e vira "Vencido").
+const fimDoMesAtual=(()=>{const [y,m]=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Bahia",year:"numeric",month:"2-digit"}).format(new Date()).split("-").map(Number);return `${y}-${String(m).padStart(2,"0")}-${new Date(Date.UTC(y,m,0)).getUTCDate()}`;})();
+
 test("contas a pagar: parcelas, recorrência, aprovação, estorno e permissões",async({page,browser})=>{
   const created:string[]=[],prefix=randomUUID(),password=`Test-${randomUUID()}!`;
   const emails=[`pagar-owner-${prefix}@example.com`,`pagar-contador-${prefix}@example.com`];
@@ -39,7 +43,7 @@ test("contas a pagar: parcelas, recorrência, aprovação, estorno e permissões
     await row.getByRole("button",{name:"Desfazer baixa",exact:true}).click();const undo=page.getByRole("form",{name:"Desfazer baixa",exact:true});await undo.getByLabel("Motivo para desfazer a baixa",{exact:true}).fill("Pagamento registrado incorretamente");await undo.getByLabel("Senha de aprovação",{exact:true}).fill("193750");await undo.getByRole("button",{name:"Desfazer baixa",exact:true}).click();await expect(alert(page,"Baixa desfeita.")).toBeVisible();
     await row.getByRole("link",{name:"Histórico",exact:true}).click();await expect(page.getByRole("heading",{name:"Histórico de pagamentos",exact:true})).toBeVisible();await expect(page.getByRole("row").filter({hasText:"Baixa manual"})).toHaveCount(1);await expect(page.getByRole("row").filter({hasText:"Estorno"})).toHaveCount(1);await page.goto(`${pagarPath}?status=todos`);
     await launch("Compra parcelada","parcelado");const installments=page.getByRole("row").filter({hasText:"Compra parcelada"});await expect(installments).toHaveCount(3);await expect(installments.nth(0)).toContainText("R$ 33,34");await expect(installments.nth(1)).toContainText("28/02/2026");await expect(installments.nth(2)).toContainText("31/03/2026");
-    await launch("Assinatura mensal","recorrente","49,90","2026-10-31");const recurring=page.getByRole("row").filter({hasText:"Assinatura mensal"});await expect(recurring).toHaveCount(12);await recurring.first().getByRole("button",{name:"Interromper",exact:true}).click();await page.getByRole("form",{name:"Interromper recorrência",exact:true}).getByRole("button",{name:"Interromper recorrência",exact:true}).click();await expect(alert(page,"Recorrência interrompida.")).toBeVisible();await expect(recurring.first()).toContainText("Cancelado");
+    await launch("Assinatura mensal","recorrente","49,90",fimDoMesAtual);const recurring=page.getByRole("row").filter({hasText:"Assinatura mensal"});await expect(recurring).toHaveCount(12);await recurring.first().getByRole("button",{name:"Interromper",exact:true}).click();await page.getByRole("form",{name:"Interromper recorrência",exact:true}).getByRole("button",{name:"Interromper recorrência",exact:true}).click();await expect(alert(page,"Recorrência interrompida.")).toBeVisible();await expect(recurring.first()).toContainText("Cancelado");
     await page.getByRole("button",{name:"Atualizar recorrências",exact:true}).click();await expect(alert(page,"0 ocorrência(s) gerada(s).")).toBeVisible();
     // O link administrativo fornece OTP sem enviar e-mail. A confirmação usa Auth real e JWT real.
     await page.getByRole("button",{name:"Trocar senha de aprovação",exact:true}).click();

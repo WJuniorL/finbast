@@ -2,6 +2,29 @@
 
 Formato: [Keep a Changelog](https://keepachangelog.com). Datas em dd/mm/aaaa.
 
+## [Não lançado] — 23/11/2026
+
+### Adicionado
+- Páginas raiz de "não encontrada" (404) e de erro com "Tentar novamente", em português.
+- `melhorias.md`: backlog vivo de melhorias, com regra de uso no `CLAUDE.md`.
+- Faixa "Nova versão disponível" após deploy (`/api/versao`), sem recarregar sozinha.
+
+### Segurança
+- Content-Security-Policy com nonce por requisição (`src/proxy.ts`); todas as páginas passam a
+  renderizar por requisição para receber o nonce.
+- Headers de segurança em todas as rotas: HSTS, X-Frame-Options, X-Content-Type-Options,
+  Referrer-Policy e Permissions-Policy.
+- Claude Code: `.env*` bloqueado também para Edit/Write, não só para leitura.
+
+### Corrigido
+- Hook de typecheck: regex de normalização de caminho do Windows agora troca a barra invertida simples.
+- Lint ignora o bundle de terceiros em `public/previews/` (36 erros que não eram do projeto).
+- `X-Frame-Options` passou de DENY para SAMEORIGIN: a prévia em `public/previews/` usa iframe da
+  mesma origem; o app segue protegido pelo `frame-ancestors 'none'` da CSP.
+- Testes de Pagar/Receber (banco e navegador) usavam data fixa de recorrência que envelheceu;
+  agora usam o fim do mês corrente.
+- Agente `test-writer` descrevia um projeto sem testes; agora aponta os runners reais (node:test, db-test, Playwright).
+
 ## [Não lançado] — 19/10/2026
 
 ### Adicionado

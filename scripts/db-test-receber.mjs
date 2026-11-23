@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {randomUUID} from "node:crypto";
 import {databaseClient} from "./db-client.mjs";
+// Último dia do mês corrente no fuso de private.hoje_financeiro(): a série recorrente precisa
+// começar no mês atual para gerar exatamente o horizonte de 12 meses (data fixa envelhece).
+const fimDoMesAtual=(()=>{const [y,m]=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Bahia",year:"numeric",month:"2-digit"}).format(new Date()).split("-").map(Number);return `${y}-${String(m).padStart(2,"0")}-${new Date(Date.UTC(y,m,0)).getUTCDate()}`;})();
 const client=databaseClient();let checks=0,context="schema";
 const equal=(actual,expected)=>{assert.deepEqual(actual,expected,context);checks++;};
 async function asUser(id){await client.query("reset role");await client.query("select set_config('request.jwt.claim.sub',$1,true)",[id]);await client.query("set local role authenticated");}
@@ -55,7 +58,7 @@ try{
   await denied("update public.categorias set tipo='despesa' where id=$1",[cat],["23503"]);
   equal((await rpc("criar_receber",[empresa,randomUUID(),{...data,categoria_id:expense}])).codigo,"cadastro_invalido");
   context="recorrência e arquivos";
-  const recurring=await rpc("criar_receber",[empresa,randomUUID(),{...data,modo:"recorrente",vencimento:"2026-10-31"}]);equal(recurring.gerados,12);equal((await rpc("expandir_receber",[empresa])).gerados,0);
+  const recurring=await rpc("criar_receber",[empresa,randomUUID(),{...data,modo:"recorrente",vencimento:fimDoMesAtual}]);equal(recurring.gerados,12);equal((await rpc("expandir_receber",[empresa])).gerados,0);
   await client.query("update public.clientes set ativo=false where id=$1",[customer]);equal((await rpc("expandir_receber",[empresa])).bloqueadas,1);
   equal((await rpc("criar_receber",[empresa,randomUUID(),data])).codigo,"cadastro_invalido");
   const original=await record(recurring.serie_id);equal((await rpc("editar_receber",[empresa,original.id,original.versao,{...data,descricao:"Mantendo referência arquivada"}])).codigo,"ok");

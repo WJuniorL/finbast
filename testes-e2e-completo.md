@@ -3,7 +3,7 @@
 Jornada sequencial: comece em **T001**; reutilize conta, cadastros e lançamentos nas jornadas
 seguintes. Não use contas ou documentos de clientes reais. Remoção de fixtures fica por último.
 
-**Atualizado em 16/10/2026.** Fonte de escopo financeiro: `prd.md` e `plan.md`.
+**Atualizado em 23/11/2026.** Fonte de escopo financeiro: `prd.md` e `plan.md`.
 Este roteiro cobre o implementado e o planejado; não comprova execução manual por si só.
 
 ## Como registrar uma rodada
@@ -1486,6 +1486,36 @@ do componente sem alargar a página. Screenshot temporário `test-results/produt
 
 **Evidência:** `tests/e2e/assistente-adversarial.spec.ts`.
 
+### T120 — Headers de segurança e CSP
+
+**Implementação:** Implementado (`next.config.ts`, CSP com nonce em `src/proxy.ts`) · **Automação:** tests/e2e/infra.spec.ts
+
+**Status:** 🤖 automatizado; conferência manual pendente · **Última rodada:** 23/11/2026 · **Resultado:** ✅ automação indicada; regressão completa (13 specs) passou sob a CSP
+
+**Ações:** Faça `curl -I` em `/login` e em uma rota de conta no build de produção; abra as telas principais com o console do navegador aberto.
+
+**Esperado:** Respostas trazem `Strict-Transport-Security`, `X-Frame-Options: SAMEORIGIN` (as prévias em `public/previews` usam iframe da mesma origem), `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy` e `Content-Security-Policy` com `script-src 'self' 'nonce-…' 'strict-dynamic'` e `frame-ancestors 'none'`. O nonce muda a cada requisição. Nenhuma violação de CSP no console; formulários, gráficos, exportações e o assistente continuam funcionando. Negativo: a página não abre dentro de `<iframe>` de outro site; script inline injetado sem nonce não executa. HTTPS forçado só é verificável no ambiente publicado.
+
+### T121 — Página não encontrada e erro fora de /empresas
+
+**Implementação:** Implementado (`src/app/not-found.tsx`, `src/app/error.tsx`) · **Automação:** tests/e2e/infra.spec.ts (404)
+
+**Status:** 🤖 404 automatizado; tela de erro e conferência manual pendentes · **Última rodada:** 23/11/2026 · **Resultado:** ✅ automação indicada
+
+**Ações:** Acesse uma rota inexistente, logado e deslogado. Clique em "Voltar ao início".
+
+**Esperado:** Status 404, texto em português, sem stack trace e sem confirmar se um recurso de outra conta existe; o botão leva a `/`, que redireciona para `/empresas` ou `/login`. Erro inesperado fora de `/empresas` mostra "Algo deu errado" com "Tentar novamente". Em 390px nada rola de lado.
+
+### T122 — Aviso de nova versão durante deploy
+
+**Implementação:** Implementado (`/api/versao`, `src/components/nova-versao.tsx`) · **Automação:** tests/e2e/infra.spec.ts (versão simulada por interceptação)
+
+**Status:** 🤖 automatizado com versão simulada; deploy real e conferência manual pendentes · **Última rodada:** 23/11/2026 · **Resultado:** ✅ automação indicada
+
+**Ações:** Abra uma tela e digite algo num campo. Publique uma nova versão (ou, no teste, faça `/api/versao` responder outra versão). Volte à aba ou aguarde até 5 min.
+
+**Esperado:** Com a mesma versão, nada aparece. Com versão diferente, aparece a faixa "Nova versão disponível" (`role="status"`) com o botão "Atualizar"; a página **não** recarrega sozinha e o texto digitado continua no campo. `/api/versao` responde com `Cache-Control: no-store`. Com a aba em segundo plano não há consulta; sem conexão, nada quebra e a consulta é refeita no próximo ciclo. A sessão (cookies) sobrevive ao clicar em "Atualizar".
+
 ## Resumo de cobertura
 
 | Jornada | IDs |
@@ -1504,8 +1534,9 @@ do componente sem alargar a página. Screenshot temporário `test-results/produt
 | Assistente de IA | T115–T119 |
 | Módulos futuros do plano | T085–T090 |
 | Casos acrescentados: upload e ZIP | T091–T092 |
+| Infra: headers, CSP, páginas de erro e nova versão | T120–T122 |
 
-Total: **119 cenários**. IDs planejados serão detalhados e atualizados conforme cada entrega,
+Total: **122 cenários**. IDs planejados serão detalhados e atualizados conforme cada entrega,
 sem tratar funcionalidades futuras como defeitos do módulo atual.
 
 
@@ -1669,6 +1700,9 @@ Fluxo/Dashboard → Planejamento/produtos/DRE. Eventos de uso entram junto de ca
 | 20/10/2026 | Build local :3100 + Supabase + OpenAI (modelo real) | Assistente de IA | Migration `assistente_teto` aplicada. `db-test-assistente.mjs`: 15 verificações (inclui 12 chamadas simultâneas com teto 5 = 5 aceitas). `tests/ajuda.test.ts`: 4 testes. `assistente.spec.ts` passou (14–16s) com chamadas reais ao modelo: base local, proposta de cadastro, confirmação, consulta de cadastros, leitor sem proposta e 390px. Regressão completa ainda não reexecutada após esta entrega. Texto do modelo não é asserido com rigor; conferência manual pendente |
 | 20/10/2026 | Build local :3100 + Supabase + OpenAI | Regressão completa com o Assistente de IA | `npm run test:db`: 20 scripts, 1.314 verificações passaram. 47 unidades, build, TypeScript e lint passaram. `npx playwright test --output=test-results/regressao`: 11 specs passaram em 5,9min (inclui assistente com modelo real). Fixtures revertidas/removidas; sem e-mail real; conferência manual pendente |
 | 20/10/2026 | Build local :3100 + Supabase + OpenAI (modelo real) | Assistente: revisão e testes adversariais | Revisão do código do agente (isolamento, dados enviados, confirmação, teto) e novo spec `assistente-adversarial.spec.ts`. Primeiras execuções falharam: limpeza deixou o papel `authenticated` ativo (corrigido, fixtures órfãs removidas), asserção contava o nome que o próprio teste enviou na pergunta (falso positivo), e o modelo recusou/reescreveu a descrição (teste ajustado para conferir valor e data). Achado de produto corrigido: o cartão exibia o valor bruto do modelo ("R$ 1200,00"); agora é validado e formatado no servidor. Após os ajustes, 4 rodadas seguidas passaram (~55s). `npm audit --omit=dev`: 0 vulnerabilidades. Regressão completa não reexecutada após esta mudança |
+| 23/11/2026 | Build local :3199 (`next start`), sem Supabase nas checagens de rota | Headers de segurança, 404/erro raiz, ajustes do Claude Code | `npx tsc --noEmit`, `npm run lint` (agora ignora `public/previews/**`, bundle de terceiros), 47 unidades e `npm run build` passaram. `curl -I /login`: cinco headers presentes. `curl /rota-que-nao-existe`: 404 com texto em português. Hooks testados por pipe: typecheck sai 2 com erro de tipo e 0 sem; Stop sai 0 com `stop_hook_active`. `test:db` e specs de navegador não reexecutados (mudança não toca banco nem fluxo autenticado); conferência manual pendente |
+| 23/11/2026 | Build local :3100 (`next start`); Supabase **inacessível** (DNS do projeto não resolve, provável pausa por inatividade) | CSP com nonce, aviso de nova versão, X-Frame-Options | TypeScript, lint e build passaram; todas as rotas passaram a dinâmicas. `infra.spec.ts` (CSP, nonce por requisição, faixa de nova versão sem recarregar, 404, `/api/versao` sem cache) passou 3×3 após reiniciar o servidor. Varredura de navegador em /login, /cadastro, /recuperar-senha, /styleguide (clique de tema responde) e /design-system: sem violação de CSP nem erro de JS. Achado e corrigido: `X-Frame-Options: DENY` bloqueava a prévia estática `inbox-layout.html` → `SAMEORIGIN`; login embutido em outra origem continua bloqueado. **Regressão completa inválida**: a primeira tentativa (13 de 15 falharam) rodou contra servidor quebrado (o hook de Stop reconstruiu `.next` com o `next start` no ar → chunks 500) e com o Supabase fora; specs com login, `test:db` e as telas autenticadas sob CSP **não verificados** |
+| 23/11/2026 | Build local :3100 + Supabase reativado + OpenAI (modelo real) | Regressão completa com CSP com nonce, nova versão e headers | `npm run test:db`: 20 scripts, 1.314 verificações passaram após corrigir duas datas fixas que envelheceram (`db-test-pagar`/`db-test-receber`: série recorrente iniciada em 31/10/2026 passava a gerar a 13ª ocorrência em novembro — comportamento do banco correto, teste desatualizado; agora usa o fim do mês corrente em America/Bahia). Navegador: 13 specs/15 testes passaram em três lotes (2,7min + 1,9min + 1,1min), sob CSP, incluindo exportações CSV/XLSX, importação, gráficos e assistente com modelo real. `pagar.spec.ts` falhou uma vez pela mesma data fixa (ocorrência 31/10/2026 já vencida não é cancelada ao interromper) e passou após usar o fim do mês corrente. 47 unidades, build, TypeScript e lint passaram. Fixtures revertidas/removidas; sem e-mail real; conferência manual pendente |
 
 Atualizar esta tabela a cada entrega com números efetivamente executados, falhas/ressalvas e
 o estado das funcionalidades novas. Não copiar o resultado anterior como uma nova execução.
