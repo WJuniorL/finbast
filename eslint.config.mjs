@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Prévias estáticas com bundle de terceiros minificado — não é código do projeto.
+    "public/previews/**",
   ]),
 ]);
 

@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { databaseClient } from "./db-client.mjs";
+// Último dia do mês corrente no fuso de private.hoje_financeiro(): a série recorrente precisa
+// começar no mês atual para gerar exatamente o horizonte de 12 meses (data fixa envelhece).
+const fimDoMesAtual=(()=>{const [y,m]=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Bahia",year:"numeric",month:"2-digit"}).format(new Date()).split("-").map(Number);return `${y}-${String(m).padStart(2,"0")}-${new Date(Date.UTC(y,m,0)).getUTCDate()}`;})();
 
 const client=databaseClient(); let checks=0; let context="schema";
 const equal=(actual,expected)=>{assert.deepEqual(actual,expected,context);checks++;};
@@ -81,7 +84,7 @@ try {
   await asUser(owner,{session_id,amr:[{method:"otp",timestamp:Math.floor(Date.now()/1000)-600}]});equal((await rpc("configurar_aprovacao",["193750",true])).codigo,"confirmar_email");
   await asUser(owner,{user_metadata:{amr}});equal((await rpc("configurar_aprovacao",["193750",true])).codigo,"confirmar_email");
   context="recorrência, arquivo e isolamento";
-  const recurring=await rpc("criar_pagar",[empresa,randomUUID(),{...data,modo:"recorrente",vencimento:"2026-10-31"}]);equal(recurring.gerados,12);
+  const recurring=await rpc("criar_pagar",[empresa,randomUUID(),{...data,modo:"recorrente",vencimento:fimDoMesAtual}]);equal(recurring.gerados,12);
   equal((await rpc("expandir_pagar",[empresa])).gerados,0);
   const occurrence=await record(recurring.serie_id);
   equal((await rpc("cancelar_pagar",[empresa,occurrence.id,occurrence.versao,true])).codigo,"ok");

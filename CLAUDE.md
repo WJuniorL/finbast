@@ -61,7 +61,17 @@ npm run dev      # servidor local, localhost:3000
 npm run build    # build de produção — rodar antes de considerar algo pronto
 npm run lint     # eslint
 npx tsc --noEmit # typecheck isolado, mais rápido que build completo
+npm test         # unidade (node:test, tests/*.test.ts)
+npm run test:db  # banco/RLS/concorrência (scripts/db-test-*.mjs, Supabase real)
+npm run test:e2e # navegador (Playwright, tests/e2e/)
 ```
+
+## Lista de melhorias
+
+A cada atualização relevante, consulte `melhorias.md`: resolva o que couber no escopo,
+acrescente o que encontrou e não resolveu (sem duplicar), mova o que foi resolvido para Feitas
+e registre o motivo do que for adiado ou descartado. Avaliar não obriga a implementar.
+Pendência de decisão de produto vai para `plan.md`, não para cá.
 
 ## O que não fazer
 
