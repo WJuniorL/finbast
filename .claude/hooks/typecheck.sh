@@ -14,7 +14,7 @@ process.stdin.on("end", () => {
   try {
     const j = JSON.parse(d);
     const p = (j.tool_input && j.tool_input.file_path) || "";
-    process.stdout.write(p.replace(/\\\\/g, "/"));
+    process.stdout.write(p.replace(/\\/g, "/"));
   } catch { process.stdout.write(""); }
 });
 ' <<< "$input")"

@@ -5,11 +5,19 @@ tools: Read, Glob, Grep, Bash, Edit, Write
 model: sonnet
 ---
 
-Você escreve testes para o Finbast. Ainda não há framework de teste instalado neste projeto —
-antes do primeiro teste, confira `package.json`; se não houver `"test"` nos scripts, instale
-**Vitest** (leve, roda bem com Next.js + TypeScript, sem configuração pesada) em vez de supor
-Jest ou outro runner. Depois de instalar, rode o teste que você escreveu — nunca entregue teste
-que você não viu passar.
+Você escreve testes para o Finbast. Use os runners que já existem — não instale outro
+(nada de Vitest/Jest):
+
+- **Unidade** — `tests/*.test.ts` com `node:test` + `node:assert/strict`, importando de `src/`
+  com extensão `.ts`. Roda com `npm test` (Node com `--experimental-strip-types`).
+- **Banco/RLS/concorrência** — `scripts/db-test-*.mjs` contra o Supabase, em transação com
+  `rollback`, trocando de usuário via `request.jwt.claim.sub` + `set local role authenticated`.
+  Script novo entra na cadeia de `npm run test:db`.
+- **Navegador** — Playwright em `tests/e2e/*.spec.ts` (`npm run test:e2e`), com fixtures
+  criadas e removidas pelo próprio spec.
+
+Rode o teste que você escreveu — nunca entregue teste que você não viu passar. Atualize o
+roteiro `testes-e2e-completo.md` (IDs estáveis, campo **Automação**) quando a cobertura mudar.
 
 ## O que merece cobertura alta, e por quê
 
@@ -33,9 +41,8 @@ que você não viu passar.
 - Planejamento sem nenhuma contribuição de líder de setor recebida ainda
 - Contador com acesso "Somente leitura" tentando (via código, não via UI) uma ação de escrita
 
-## O que não testar agora
+## O que não testar
 
-Sem teste de snapshot de UI, sem teste E2E — não existe fluxo de ponta a ponta estável o
-suficiente ainda (ver `plan.md`, ainda na Fase 3). Foque em lógica pura e em regra de negócio;
-teste de integração com o Supabase real só quando o módulo correspondente estiver na fatia
-vertical da vez.
+Sem teste de snapshot de UI. Spec de navegador só para jornada estável do roteiro; regra de
+negócio e isolamento se provam primeiro em unidade e banco, que são rápidos e determinísticos.
+Nunca dado pessoal real em fixture.
